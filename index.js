@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded());
 app.use(express.static('public'));
 
 const parts = [];
+let partCount = 0;
 
 app.get('/', (req, res) => {
   res.send(templateIndex({
@@ -19,15 +20,31 @@ app.get('/', (req, res) => {
 
 app.post('/add', (req, res) => {
   parts.push({
+    id: partCount,
     type: null,
     string: '',
   });
 
+  partCount = partCount + 1;
+
   res.redirect('/');
+});
+
+app.post('/api/add', (req, res) => {
+  parts.push({
+    id: partCount,
+    type: null,
+    string: '',
+  });
+
+  partCount = partCount + 1;
+
+  res.json(true);
 });
 
 app.post('/save/:id', (req, res) => {
   parts[req.params.id] = {
+    id: req.params.id,
     type: req.body.type,
     string: req.body.string,
   };
@@ -37,10 +54,11 @@ app.post('/save/:id', (req, res) => {
 
 app.post('/api/save/:id', (req, res) => {
   parts[req.params.id] = {
+    id: req.params.id,
     type: req.body.type,
     string: req.body.string,
   };
-  
+
   res.json(true);
 });
 

@@ -1,14 +1,4 @@
-/*
-    .startOfLine()
-    .then('http')
-    .maybe('s')
-    .then('://')
-    .maybe('www.')
-    .anythingBut(' ')
-    .endOfLine();
-    */
-
-class KleenePart extends HTMLElement {
+class KleeneAdd extends HTMLElement {
   constructor() {
     super();
 
@@ -22,6 +12,10 @@ class KleenePart extends HTMLElement {
 
       <slot></slot>
     `;
+
+    this._state = {};
+
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
   connectedCallback() {
@@ -41,18 +35,14 @@ class KleenePart extends HTMLElement {
   onSubmit(event) {
     event.preventDefault();
 
-    const data = [...event.target.elements].reduce((previous, element) => {
-      previous[element.name] = element.value;
+    this.dispatchEvent(new CustomEvent('added', {
+      detail: {
+        add: true,
+      },
+    }));
 
-      return previous;
-    }, {});
-
-    fetch(`/api/save/${data.id}`, {
+    fetch('/api/add', {
       method: 'post',
-      body: JSON.stringify(data),
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
     })
     .then(response => response.json())
     .then((data) => {
@@ -62,6 +52,31 @@ class KleenePart extends HTMLElement {
       console.log('Request failed', error);
     });
   }
+
+  static get observedAttributes() {
+    return ['state'];
+  }
+
+  get state() {
+    const jsonString = this.getAttribute('state');
+
+    return jsonString ? JSON.parse(jsonString) : {};
+  }
+
+  set state(state) {
+    this.setAttribute('state', JSON.stringify(state));
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'state':
+        this._state = newValue;
+        console.log(this._state);
+        break;
+      default:
+        break;
+    }
+  }
 }
 
-window.customElements.define('kleene-part', KleenePart);
+window.customElements.define('kleene-add', KleeneAdd);
