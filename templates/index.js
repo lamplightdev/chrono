@@ -1,24 +1,21 @@
 const template = (args) => {
-  const parts = args.parts;
-
   const state = {
-    parts,
+    parts: args.parts,
   };
 
   const stateString = JSON.stringify(state);
 
   const templatePart = (part) => (`
-    <kleene-part>
-      <form action='/save/${part.id}' method='post'>
-        <input type='hidden' name='id' value='${part.id}' />
-        <select name='type'>
-          <option value='startOfLine' ${part.type === 'startOfLine' ? 'selected' : ''}>startOfLine</option>
-          <option value='then' ${part.type === 'then' ? 'selected' : ''}>then</option>
-        </select>
-        <input name='string' type='text' value='${part.string}' />
-        <button>Save</button>
-      </form>
-    </kleene-part>
+
+    <form action='/save/${part.id}' method='post'>
+      <input type='hidden' name='id' value='${part.id}' />
+      <select name='type'>
+        <option value='startOfLine' ${part.type === 'startOfLine' ? 'selected' : ''}>startOfLine</option>
+        <option value='then' ${part.type === 'then' ? 'selected' : ''}>then</option>
+      </select>
+      <input name='string' type='text' value='${part.string}' />
+      <button>Save</button>
+    </form>
   `);
 
   return `
@@ -39,27 +36,31 @@ const template = (args) => {
 
   <body>
 
-    <header>
-    </header>
+    <kleene-state state='${stateString}'>
+      <div slot='main'>
+        <header>
+        </header>
 
-    <main>
-        <kleene-parts>
-        ${parts.map((part) => {
-          return templatePart(part);
-        }).join('')}
-        </kleene-parts>
+        <main>
+          <kleene-parts state='${JSON.stringify(state.parts)}'>
+            ${state.parts.map((part) => {
+              return templatePart(part);
+            }).join('')}
+          </kleene-parts>
 
-      <kleene-add>
-        <form action='/add' method='post'>
-          <button>Add</button>
-        </form>
-      </kleene-add>
-    </main>
+          <kleene-add>
+            <form action='/add' method='post'>
+              <button>Add</button>
+            </form>
+          </kleene-add>
+        </main>
 
-    <footer>
-    </footer>
+        <footer>
+        </footer>
+      </div>
+    </kleene-state>
 
-    <template id="part">
+    <template id="kleene-part">
       ${templatePart({
         id: '',
         string: '',
@@ -67,24 +68,10 @@ const template = (args) => {
       })}
     </template>
 
+    <script src='js/elements/state.js'></script>
     <script src='js/elements/add.js'></script>
     <script src='js/elements/parts.js'></script>
     <script src='js/elements/part.js'></script>
-
-    <script>
-      const Kleene = JSON.parse('${stateString}');
-
-      const add = document.querySelector('kleene-add');
-      const parts = document.querySelector('kleene-parts');
-
-      add.addEventListener('added', (event) => {
-        // TODO: update parts attribute
-        console.log('added', event.detail);
-        add.setAttribute('state', 'blah');
-        parts.addPart();
-      });
-    </script>
-    <script src='js/app.js'></script>
   </body>
 
 </html>

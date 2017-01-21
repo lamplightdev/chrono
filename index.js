@@ -1,16 +1,17 @@
 const express = require('express');
+const compression = require('compression');
 const bodyParser = require('body-parser');
 
 const templateIndex = require('./templates/index');
 
 const app = express();
 
+app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static('public'));
 
 const parts = [];
-let partCount = 0;
 
 app.get('/', (req, res) => {
   res.send(templateIndex({
@@ -20,24 +21,20 @@ app.get('/', (req, res) => {
 
 app.post('/add', (req, res) => {
   parts.push({
-    id: partCount,
+    id: parts.length,
     type: null,
     string: '',
   });
-
-  partCount = partCount + 1;
 
   res.redirect('/');
 });
 
 app.post('/api/add', (req, res) => {
   parts.push({
-    id: partCount,
+    id: parts.length,
     type: null,
     string: '',
   });
-
-  partCount = partCount + 1;
 
   res.json(true);
 });

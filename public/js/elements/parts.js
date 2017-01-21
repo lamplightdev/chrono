@@ -9,34 +9,64 @@ class KleeneParts extends HTMLElement {
         :host {
         }
       </style>
-
-      <slot></slot>
-
-      <div id="new-parts"></div>
     `;
 
-    this._numberParts = 0;
+    this._state = [];
+    this._stateString = JSON.stringify(this._state);
   }
 
-  addPart() {
-    // TODO: call on attribute change
-    console.log('addPart');
-    const template = document.querySelector('template#part');
-    const instance = template.content.cloneNode(true);
-    instance.querySelector('[name=id]').value = this._numberParts;
-    this.shadowRoot.querySelector('#new-parts').appendChild(instance);
+  static get observedAttributes() {
+    return ['state'];
+  }
 
-    this._numberParts = this._numberParts + 1;
+  get state() {
+    const jsonString = this.getAttribute('state');
+
+    return jsonString ? JSON.parse(jsonString) : [];
+  }
+
+  set state(state) {
+    this.setAttribute('state', JSON.stringify(state));
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'state':
+        if (this._stateString !== newValue) {
+          this._stateString = newValue;
+
+          const newState = this._stateString ? JSON.parse(this._stateString) : [];
+
+          newState.forEach((newPart) => {
+            if (!this._state.some((existingPart) => {
+              return existingPart.id === newPart.id;
+            })) {
+              this.addPart(newPart);
+            }
+          });
+          this._state = newState;
+
+          console.log('parts', this._state);
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   connectedCallback() {
-    this._numberParts = this.shadowRoot.querySelector('slot')
-      .assignedNodes()
-      .filter(node => node.nodeType !== Node.TEXT_NODE)
-      .length;
   }
 
   disconnectedCallback() {
+  }
+
+  addPart(part) {
+    // TODO: call on attribute change
+    console.log('addPart');
+
+    const kleenePart = document.createElement('kleene-part');
+    kleenePart.setAttribute('state', JSON.stringify(part));
+    this.shadowRoot.appendChild(kleenePart);
   }
 }
 
