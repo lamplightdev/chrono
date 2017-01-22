@@ -35,7 +35,7 @@ class KleeneAdd extends HTMLElement {
   onSubmit(event) {
     event.preventDefault();
 
-    this.dispatchEvent(new CustomEvent('state:add', {
+    this.dispatchEvent(new CustomEvent('state:partadd', {
       bubbles: true,
       composed: true,
     }));

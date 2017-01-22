@@ -1,20 +1,33 @@
 const template = (args) => {
-  const state = {
-    parts: args.parts,
-  };
+  const state = args.state;
 
   const stateString = JSON.stringify(state);
 
+  const typeOptions = [
+    'startOfLine',
+    'then',
+    'maybe',
+    'anything',
+    'endOfLine',
+  ];
+
   const templatePart = (part) => (`
 
-    <form action='/save/${part.id}' method='post'>
+    <form id='save' action='/part/${part.id}' method='post'>
+      <input type='hidden' name='method' value='post'>
       <input type='hidden' name='id' value='${part.id}' />
       <select name='type'>
-        <option value='startOfLine' ${part.type === 'startOfLine' ? 'selected' : ''}>startOfLine</option>
-        <option value='then' ${part.type === 'then' ? 'selected' : ''}>then</option>
+        ${typeOptions.map(type => {
+          return `<option value='${type}' ${part.type === type ? 'selected' : ''}>${type}</option>`;
+        })}
       </select>
       <input name='string' type='text' value='${part.string}' />
       <button>Save</button>
+    </form>
+    <form id='delete' action='/part/${part.id}}' method='post'>
+      <input type='hidden' name='method' value='delete'>
+      <input type='hidden' name='id' value='${part.id}' />
+      <button>Delete</button>
     </form>
   `);
 
@@ -49,7 +62,7 @@ const template = (args) => {
           </kleene-parts>
 
           <kleene-add>
-            <form action='/add' method='post'>
+            <form action='/part' method='post'>
               <button>Add</button>
             </form>
           </kleene-add>

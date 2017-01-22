@@ -1,13 +1,3 @@
-/*
-    .startOfLine()
-    .then('http')
-    .maybe('s')
-    .then('://')
-    .maybe('www.')
-    .anythingBut(' ')
-    .endOfLine();
-    */
-
 class KleenePart extends HTMLElement {
   constructor() {
     super();
@@ -23,6 +13,9 @@ class KleenePart extends HTMLElement {
 
     this._state = {};
     this._stateString = JSON.stringify(this._state);
+
+    this.onSave = this.onSave.bind(this);
+    this.onDelete = this.onDelete.bind(this);
   }
 
   static get observedAttributes() {
@@ -64,16 +57,24 @@ class KleenePart extends HTMLElement {
   init(part) {
     const template = document.querySelector('template#kleene-part');
     const instance = template.content.cloneNode(true);
-    instance.querySelector('[name=id]').value = part.id;
-    instance.querySelector('[name=type]').value = part.type;
-    instance.querySelector('[name=string]').value = part.string;
 
-    instance.querySelector('form').addEventListener('submit', this.onSubmit);
+    [...instance.querySelectorAll('[name=id]')].forEach((element) => {
+      element.value = part.id;
+    });
+    [...instance.querySelectorAll('[name=type]')].forEach((element) => {
+      element.value = part.type;
+    });
+    [...instance.querySelectorAll('[name=string]')].forEach((element) => {
+      element.value = part.string;
+    });
+
+    instance.querySelector('form#save').addEventListener('submit', this.onSave);
+    instance.querySelector('form#delete').addEventListener('submit', this.onDelete);
 
     this.shadowRoot.appendChild(instance);
   }
 
-  onSubmit(event) {
+  onSave(event) {
     event.preventDefault();
 
     const data = [...event.target.elements].reduce((previous, element) => {
@@ -82,10 +83,20 @@ class KleenePart extends HTMLElement {
       });
     }, {});
 
-    data.id = parseInt(data.id, 10);
+    data.id = this._state.id;
 
-    this.dispatchEvent(new CustomEvent('state:part', {
+    this.dispatchEvent(new CustomEvent('state:partsave', {
       detail: data,
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  onDelete(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('state:partdelete', {
+      detail: this._state.id,
       bubbles: true,
       composed: true,
     }));
