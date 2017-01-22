@@ -1,7 +1,11 @@
+const Part = require('../public/js/models/part');
+
 const template = (args) => {
   const state = args.state;
 
-  const stateString = JSON.stringify(state);
+  const stateString = JSON.stringify({
+    parts: state.parts.getParts().map(part => part.getParams()),
+  });
 
   const typeOptions = [
     'startOfLine',
@@ -11,22 +15,22 @@ const template = (args) => {
     'endOfLine',
   ];
 
-  const templatePart = (part) => (`
+  const templatePart = part => (`
 
-    <form id='save' action='/part/${part.id}' method='post'>
-      <input type='hidden' name='method' value='post'>
-      <input type='hidden' name='id' value='${part.id}' />
+    <form id='save' action='/part/${part.getId()}' method='post'>
+      <input type='hidden' name='method' value='save'>
+      <input type='hidden' name='id' value='${part.getId()}' />
       <select name='type'>
-        ${typeOptions.map(type => {
-          return `<option value='${type}' ${part.type === type ? 'selected' : ''}>${type}</option>`;
-        })}
+        ${typeOptions.map(type => (
+          `<option value='${type}' ${part.getType() === type ? 'selected' : ''}>${type}</option>`
+        ))}
       </select>
-      <input name='string' type='text' value='${part.string}' />
+      <input name='string' type='text' value='${part.getString()}' />
       <button>Save</button>
     </form>
-    <form id='delete' action='/part/${part.id}}' method='post'>
+    <form id='delete' action='/part/${part.getId()}}' method='post'>
       <input type='hidden' name='method' value='delete'>
-      <input type='hidden' name='id' value='${part.id}' />
+      <input type='hidden' name='id' value='${part.getId()}' />
       <button>Delete</button>
     </form>
   `);
@@ -55,10 +59,10 @@ const template = (args) => {
         </header>
 
         <main>
-          <kleene-parts state='${JSON.stringify(state.parts)}'>
-            ${state.parts.map((part) => {
-              return templatePart(part);
-            }).join('')}
+          <kleene-parts state='${JSON.stringify(state.parts.getParts().map(part => part.getParams()))}'>
+            ${state.parts.getParts().map(part => (
+              templatePart(part)
+            )).join('')}
           </kleene-parts>
 
           <kleene-add>
@@ -74,13 +78,11 @@ const template = (args) => {
     </kleene-state>
 
     <template id="kleene-part">
-      ${templatePart({
-        id: '',
-        string: '',
-        type: '',
-      })}
+      ${templatePart(new Part())}
     </template>
 
+    <script src='js/models/part.js'></script>
+    <script src='js/models/parts.js'></script>
     <script src='js/elements/state.js'></script>
     <script src='js/elements/add.js'></script>
     <script src='js/elements/parts.js'></script>

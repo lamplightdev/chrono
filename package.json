@@ -1,0 +1,29 @@
+{
+  "name": "kleene",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "compression": "^1.6.2",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.13.1",
+    "eslint-config-airbnb-base": "^11.0.1",
+    "eslint-plugin-import": "^2.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lamplightdev/kleene.git"
+  },
+  "author": "Chris Haynes",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/lamplightdev/kleene/issues"
+  },
+  "homepage": "https://github.com/lamplightdev/kleene#readme"
+}

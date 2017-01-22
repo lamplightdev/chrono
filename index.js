@@ -3,6 +3,8 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 
 const templateIndex = require('./templates/index');
+const Part = require('./public/js/models/part');
+const Parts = require('./public/js/models/parts');
 
 const app = express();
 
@@ -11,9 +13,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static('public'));
 
+// TODO: use universal state mechanism
+
 const state = {
-  parts: [],
-  nextId: 0,
+  parts: new Parts(),
 };
 
 app.get('/', (req, res) => {
@@ -23,25 +26,13 @@ app.get('/', (req, res) => {
 });
 
 app.post('/part', (req, res) => {
-  state.parts.push({
-    id: state.nextId,
-    type: null,
-    string: '',
-  });
-
-  state.nextId += 1;
+  state.parts.addPart(new Part());
 
   res.redirect('/');
 });
 
 app.put('/api/part', (req, res) => {
-  state.parts.push({
-    id: state.nextId,
-    type: null,
-    string: '',
-  });
-
-  state.nextId += 1;
+  state.parts.addPart(new Part());
 
   res.json(true);
 });
@@ -52,16 +43,15 @@ app.post('/part/:id', (req, res) => {
 
   switch (method) {
     case 'save': {
-      const existingPartIndex = state.parts.findIndex(part => part.id === id);
-      state.parts[existingPartIndex] = {
+      state.parts.savePart(new Part(
         id,
-        type: req.body.type,
-        string: req.body.string,
-      };
+        req.body.type,
+        req.body.string
+      ));
       break;
     }
     case 'delete':
-      state.parts = state.parts.filter(part => part.id !== id);
+      state.parts.deletePart(id);
       break;
     default:
       break;
@@ -72,12 +62,12 @@ app.post('/part/:id', (req, res) => {
 
 app.post('/api/part/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
-  const existingPartIndex = state.parts.findIndex(part => part.id === id);
-  state.parts[existingPartIndex] = {
+
+  state.parts.savePart(new Part(
     id,
-    type: req.body.type,
-    string: req.body.string,
-  };
+    req.body.type,
+    req.body.string
+  ));
 
   res.json(true);
 });
@@ -85,7 +75,7 @@ app.post('/api/part/:id', (req, res) => {
 app.delete('/api/part/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
 
-  state.parts = state.parts.filter(part => part.id !== id);
+  state.parts.deletePart(id);
 
   res.json(true);
 });

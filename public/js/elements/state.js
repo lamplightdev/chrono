@@ -9,8 +9,7 @@ class KleeneState extends HTMLElement {
     `;
 
     this._state = {
-      parts: [],
-      nextId: 0,
+      parts: new Parts(),
     };
     this._stateString = JSON.stringify(this._state);
   }
@@ -32,31 +31,27 @@ class KleeneState extends HTMLElement {
   onStateChange(action, data) {
     switch (action) {
       case 'state:partsave': {
-        const existingPartIndex = this._state.parts.findIndex(part => part.id === data.id);
-        this._state.parts[existingPartIndex] = data;
-        this.savePart(data);
+        const part = new Part(data.id, data.type, data.string);
+        this._state.parts.savePart(part);
+        this.savePart(part);
         break;
       }
       case 'state:partdelete':
-        this._state.parts = this._state.parts.filter(part => part.id !== data);
+        this._state.parts.deletePart(data);
         this.deletePart(data);
         break;
-      case 'state:partadd':
-        this._state.parts.push({
-          id: this._state.nextId,
-          type: null,
-          string: '',
-        });
-
-        this._state.nextId += 1;
-
+      case 'state:partadd': {
+        this._state.parts.addPart(new Part());
         this.addPart();
         break;
+      }
       default:
         break;
     }
 
-    this.setAttribute('state', JSON.stringify(this._state));
+    this.setAttribute('state', JSON.stringify({
+      parts: this._state.parts.getParts().map(part => part.getParams()),
+    }));
   }
 
   static get observedAttributes() {
@@ -76,10 +71,10 @@ class KleeneState extends HTMLElement {
     });
   }
 
-  savePart(data) {
-    fetch(`/api/part/${data.id}`, {
+  savePart(part) {
+    fetch(`/api/part/${part.getId()}`, {
       method: 'post',
-      body: JSON.stringify(data),
+      body: JSON.stringify(part.getParams()),
       headers: new Headers({
         'Content-Type': 'application/json',
       }),
@@ -109,11 +104,19 @@ class KleeneState extends HTMLElement {
   get state() {
     const jsonString = this.getAttribute('state');
 
-    return jsonString ? JSON.parse(jsonString) : {};
+    const json = jsonString ? JSON.parse(jsonString) : {};
+
+    return new Parts(json.parts.map(partJson => new Part(
+      partJson.id,
+      partJson.type,
+      partJson.string
+    )));
   }
 
   set state(state) {
-    this.setAttribute('state', JSON.stringify(state));
+    this.setAttribute('state', JSON.stringify({
+      parts: state.parts.getParts().map(part => part.getParams()),
+    }));
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -121,13 +124,20 @@ class KleeneState extends HTMLElement {
       case 'state':
         if (this._stateString !== newValue) {
           this._stateString = newValue;
-          this._state = this._stateString ? JSON.parse(this._stateString) : {};
+
+          const json = this._stateString ? JSON.parse(this._stateString) : {};
+          this._state.parts = new Parts(json.parts.map(partJson => new Part(
+            partJson.id,
+            partJson.type,
+            partJson.string
+          )));
+
           console.log('state', this._state);
 
           const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
 
           const parts = main.querySelector('kleene-parts');
-          parts.setAttribute('state', JSON.stringify(this._state.parts));
+          parts.setAttribute('state', JSON.stringify(this._state.parts.getParts().map(part => part.getParams())));
         }
         break;
       default:
