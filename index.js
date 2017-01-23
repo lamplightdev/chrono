@@ -3,8 +3,8 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 
 const templateIndex = require('./templates/index');
-const Part = require('./public/js/models/part');
-const Parts = require('./public/js/models/parts');
+
+const StateServer = require('./public/js/models/state-server');
 
 const app = express();
 
@@ -15,9 +15,7 @@ app.use(express.static('public'));
 
 // TODO: use universal state mechanism
 
-const state = {
-  parts: new Parts(),
-};
+const state = new StateServer();
 
 app.get('/', (req, res) => {
   res.send(templateIndex({
@@ -26,13 +24,13 @@ app.get('/', (req, res) => {
 });
 
 app.post('/part', (req, res) => {
-  state.parts.addPart(new Part());
+  state.addPart();
 
   res.redirect('/');
 });
 
 app.put('/api/part', (req, res) => {
-  state.parts.addPart(new Part());
+  state.addPart();
 
   res.json(true);
 });
@@ -43,15 +41,15 @@ app.post('/part/:id', (req, res) => {
 
   switch (method) {
     case 'save': {
-      state.parts.savePart(new Part(
+      state.savePart({
         id,
-        req.body.type,
-        req.body.string
-      ));
+        type: req.body.type,
+        string: req.body.string,
+      });
       break;
     }
     case 'delete':
-      state.parts.deletePart(id);
+      state.deletePart(id);
       break;
     default:
       break;
@@ -63,11 +61,11 @@ app.post('/part/:id', (req, res) => {
 app.post('/api/part/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
 
-  state.parts.savePart(new Part(
+  state.savePart({
     id,
-    req.body.type,
-    req.body.string
-  ));
+    type: req.body.type,
+    string: req.body.string,
+  });
 
   res.json(true);
 });
@@ -75,7 +73,7 @@ app.post('/api/part/:id', (req, res) => {
 app.delete('/api/part/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
 
-  state.parts.deletePart(id);
+  state.deletePart(id);
 
   res.json(true);
 });

@@ -2,7 +2,11 @@
   "extends": "airbnb-base",
 
   "globals": {
-    "HTMLElement": false
+    "HTMLElement": false,
+    "window": false,
+    "document": false,
+    "fetch": false,
+    "CustomEvent": false
   },
 
   "rules": {

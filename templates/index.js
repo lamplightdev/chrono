@@ -3,9 +3,7 @@ const Part = require('../public/js/models/part');
 const template = (args) => {
   const state = args.state;
 
-  const stateString = JSON.stringify({
-    parts: state.parts.getParts().map(part => part.getParams()),
-  });
+  const stateString = state.stringify();
 
   const typeOptions = [
     'startOfLine',
@@ -59,7 +57,7 @@ const template = (args) => {
         </header>
 
         <main>
-          <kleene-parts state='${JSON.stringify(state.parts.getParts().map(part => part.getParams()))}'>
+          <kleene-parts>
             ${state.parts.getParts().map(part => (
               templatePart(part)
             )).join('')}
@@ -83,6 +81,8 @@ const template = (args) => {
 
     <script src='js/models/part.js'></script>
     <script src='js/models/parts.js'></script>
+    <script src='js/models/state.js'></script>
+    <script src='js/models/state-client.js'></script>
     <script src='js/elements/state.js'></script>
     <script src='js/elements/add.js'></script>
     <script src='js/elements/parts.js'></script>
