@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const templateIndex = require('./templates/index');
 
 const StateServer = require('./public/js/models/state-server');
+const VerEx = require('verbal-expressions');
 
 const app = express();
 
@@ -76,6 +77,19 @@ app.delete('/api/part/:id', (req, res) => {
   state.deletePart(id);
 
   res.json(true);
+});
+
+app.post('/calculate', (req, res) => {
+  const input = req.body.input;
+  const parts = req.body.parts;
+
+  const tester = JSON.parse(parts).reduce((previous, part) => {
+    return previous[part.type](part.string);
+  }, VerEx());
+
+  console.log(tester.test(input));
+
+  res.redirect('/');
 });
 
 app.listen(process.env.PORT || 3000, () => {

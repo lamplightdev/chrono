@@ -11,6 +11,10 @@ class KleenePart extends HTMLElement {
       </style>
     `;
 
+    const template = document.querySelector('template#kleene-part');
+    const instance = template.content.cloneNode(true);
+    this.shadowRoot.appendChild(instance);
+
     this._state = {};
     this._stateString = JSON.stringify(this._state);
 
@@ -38,7 +42,6 @@ class KleenePart extends HTMLElement {
         if (this._stateString !== newValue) {
           this._stateString = newValue;
           this._state = this._stateString ? JSON.parse(this._stateString) : {};
-          console.log('part', this._state);
 
           this.init(this._state);
         }
@@ -49,29 +52,31 @@ class KleenePart extends HTMLElement {
   }
 
   connectedCallback() {
+    const root = this.shadowRoot;
+
+    root.querySelector('form#save').addEventListener('submit', this.onSave);
+    root.querySelector('form#delete').addEventListener('submit', this.onDelete);
   }
 
   disconnectedCallback() {
+    const root = this.shadowRoot;
+
+    root.querySelector('form#save').removeEventListener('submit', this.onSave);
+    root.querySelector('form#delete').removeEventListener('submit', this.onDelete);
   }
 
   init(part) {
-    const template = document.querySelector('template#kleene-part');
-    const instance = template.content.cloneNode(true);
+    const root = this.shadowRoot;
 
-    [...instance.querySelectorAll('[name=id]')].forEach((element) => {
+    [...root.querySelectorAll('[name=id]')].forEach((element) => {
       element.value = part.id;
     });
-    [...instance.querySelectorAll('[name=type]')].forEach((element) => {
+    [...root.querySelectorAll('[name=type]')].forEach((element) => {
       element.value = part.type;
     });
-    [...instance.querySelectorAll('[name=string]')].forEach((element) => {
+    [...root.querySelectorAll('[name=string]')].forEach((element) => {
       element.value = part.string;
     });
-
-    instance.querySelector('form#save').addEventListener('submit', this.onSave);
-    instance.querySelector('form#delete').addEventListener('submit', this.onDelete);
-
-    this.shadowRoot.appendChild(instance);
   }
 
   onSave(event) {

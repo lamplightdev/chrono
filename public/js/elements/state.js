@@ -53,12 +53,13 @@ class KleeneState extends HTMLElement {
     switch (name) {
       case 'state': {
         this._state = StateClient.fromObject(JSON.parse(newValue));
-        console.log('state', this._state);
 
         const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
         const parts = main.querySelector('kleene-parts');
 
         parts.setAttribute('state', JSON.stringify(this._state.getParts().toObject()));
+
+        console.log('state', this._state);
         break;
       }
       default:

@@ -11,8 +11,15 @@ class KleeneParts extends HTMLElement {
       </style>
     `;
 
+    const template = document.querySelector('template#kleene-parts');
+    const instance = template.content.cloneNode(true);
+    this.shadowRoot.appendChild(instance);
+
     this._state = [];
     this._stateString = JSON.stringify(this._state);
+
+    this.onAdd = this.onAdd.bind(this);
+    this.onCalculate = this.onCalculate.bind(this);
   }
 
   static get observedAttributes() {
@@ -50,8 +57,6 @@ class KleeneParts extends HTMLElement {
           });
 
           this._state = newState;
-
-          console.log('parts', this._state);
         }
         break;
       default:
@@ -60,25 +65,51 @@ class KleeneParts extends HTMLElement {
   }
 
   connectedCallback() {
+    const root = this.shadowRoot;
+
+    root.querySelector('form#add').addEventListener('submit', this.onAdd);
+    root.querySelector('form#calculate').addEventListener('submit', this.onCalculate);
   }
 
   disconnectedCallback() {
+    const root = this.shadowRoot;
+
+    root.querySelector('form#add').removeEventListener('submit', this.onAdd);
+    root.querySelector('form#calculate').removeEventListener('submit', this.onCalculate);
   }
 
   addPart(part) {
-    console.log('addPart');
-
     const kleenePart = document.createElement('kleene-part');
     kleenePart.setAttribute('partid', part.id);
     kleenePart.setAttribute('state', JSON.stringify(part));
-    this.shadowRoot.appendChild(kleenePart);
+    this.shadowRoot.querySelector('#parts').appendChild(kleenePart);
   }
 
   deletePart(part) {
-    console.log('deletePart');
+    const partsContainer = this.shadowRoot.querySelector('#parts');
+    const kleenePart = partsContainer.querySelector(`[partid='${part.id}']`);
+    partsContainer.removeChild(kleenePart);
+  }
 
-    const kleenePart = this.shadowRoot.querySelector(`[partid='${part.id}']`);
-    this.shadowRoot.removeChild(kleenePart);
+  onAdd(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('state:partadd', {
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  onCalculate(event) {
+    event.preventDefault();
+
+    const tester = this.state.reduce((previous, part) => {
+      return previous[part.type](part.string);
+    }, VerEx());
+
+    const input = this.querySelector('[name=input]').value;
+
+    console.log(tester.test(input));
   }
 }
 

@@ -2,7 +2,7 @@
   let Part;
   let Parts;
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
     Part = require('./part');
     Parts = require('./parts');
   } else {
@@ -52,7 +52,7 @@
     }
   }
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
     module.exports = State;
   } else {
     window.State = State;

@@ -1,7 +1,7 @@
 (() => {
   let State;
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
     State = require('./state');
   } else {
     State = window.State;
@@ -64,7 +64,7 @@
     }
   }
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
     module.exports = StateClient;
   } else {
     window.StateClient = StateClient;

@@ -1,4 +1,5 @@
 const Part = require('../public/js/models/part');
+const Parts = require('../public/js/models/parts');
 
 const template = (args) => {
   const state = args.state;
@@ -14,14 +15,13 @@ const template = (args) => {
   ];
 
   const templatePart = part => (`
-
     <form id='save' action='/part/${part.getId()}' method='post'>
       <input type='hidden' name='method' value='save'>
       <input type='hidden' name='id' value='${part.getId()}' />
       <select name='type'>
         ${typeOptions.map(type => (
           `<option value='${type}' ${part.getType() === type ? 'selected' : ''}>${type}</option>`
-        ))}
+        )).join('')}
       </select>
       <input name='string' type='text' value='${part.getString()}' />
       <button>Save</button>
@@ -30,6 +30,24 @@ const template = (args) => {
       <input type='hidden' name='method' value='delete'>
       <input type='hidden' name='id' value='${part.getId()}' />
       <button>Delete</button>
+    </form>
+  `);
+
+  const templateParts = parts => (`
+    <div id='parts'>
+      ${parts.getParts().map(part => (
+        templatePart(part)
+      )).join('')}
+    </div>
+
+    <form id='add' action='/part' method='post'>
+      <button>Add</button>
+    </form>
+
+    <form id='calculate' action='/calculate' method='post'>
+      <input type='hidden' name='parts' value='${JSON.stringify(parts.toObject())}'>
+      <textarea name='input'>This is some text that I wrote http://lamplightdev.com</textarea>
+      <button>Calculate</button>
     </form>
   `);
 
@@ -58,16 +76,8 @@ const template = (args) => {
 
         <main>
           <kleene-parts>
-            ${state.parts.getParts().map(part => (
-              templatePart(part)
-            )).join('')}
+            ${templateParts(state.getParts())}
           </kleene-parts>
-
-          <kleene-add>
-            <form action='/part' method='post'>
-              <button>Add</button>
-            </form>
-          </kleene-add>
         </main>
 
         <footer>
@@ -79,12 +89,16 @@ const template = (args) => {
       ${templatePart(new Part())}
     </template>
 
+    <template id="kleene-parts">
+      ${templateParts((new Parts()))}
+    </template>
+
+    <script src='js/libs/verbalexpressions.js'></script>
     <script src='js/models/part.js'></script>
     <script src='js/models/parts.js'></script>
     <script src='js/models/state.js'></script>
     <script src='js/models/state-client.js'></script>
     <script src='js/elements/state.js'></script>
-    <script src='js/elements/add.js'></script>
     <script src='js/elements/parts.js'></script>
     <script src='js/elements/part.js'></script>
   </body>

@@ -1,7 +1,7 @@
 (() => {
   let Part;
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
     Part = require('./part');
   } else {
     Part = window.Part;
@@ -60,7 +60,7 @@
     }
   }
 
-  if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
+  if (typeof module !== 'undefined' && module.exports) {
     module.exports = Parts;
   } else {
     window.Parts = Parts;
