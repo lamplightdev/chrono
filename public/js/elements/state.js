@@ -41,6 +41,8 @@ class KleeneState extends HTMLElement {
       default:
         break;
     }
+
+    this.setAttribute('state', JSON.stringify(this._state.toObject()));
   }
 
   static get observedAttributes() {
@@ -50,13 +52,13 @@ class KleeneState extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
       case 'state': {
-        this._state = StateClient.parse(newValue);
+        this._state = StateClient.fromObject(JSON.parse(newValue));
         console.log('state', this._state);
 
         const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
-
         const parts = main.querySelector('kleene-parts');
-        parts.setAttribute('state', JSON.stringify(this._state.getParts().getParts()));
+
+        parts.setAttribute('state', JSON.stringify(this._state.getParts().toObject()));
         break;
       }
       default:

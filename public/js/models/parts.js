@@ -27,7 +27,9 @@
     }
 
     static fromObject(data) {
-      return new this(data.map(datum => Part.fromObject(datum)));
+      return new this({
+        parts: data.map(datum => Part.fromObject(datum)),
+      });
     }
 
     getParts() {

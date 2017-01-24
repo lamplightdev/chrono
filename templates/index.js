@@ -3,7 +3,7 @@ const Part = require('../public/js/models/part');
 const template = (args) => {
   const state = args.state;
 
-  const stateString = state.stringify();
+  const stateString = JSON.stringify(state.toObject());
 
   const typeOptions = [
     'startOfLine',

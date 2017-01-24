@@ -17,18 +17,16 @@
       this.parts = parts;
     }
 
-    stringify() {
-      return JSON.stringify({
+    toObject() {
+      return {
         parts: this.parts.toObject(),
-      });
+      };
     }
 
-    static parse(string) {
+    static fromObject(data) {
       try {
-        const json = string ? JSON.parse(string) : {};
-
         return new this({
-          parts: Parts.fromObject(json.parts),
+          parts: Parts.fromObject(data.parts),
         });
       } catch (err) {
         return new this({
@@ -46,8 +44,7 @@
     }
 
     savePart(data) {
-      const part = new Part(data);
-      return this.parts.savePart(part);
+      return this.parts.savePart(new Part(data));
     }
 
     deletePart(id) {

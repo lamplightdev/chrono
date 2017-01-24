@@ -30,7 +30,7 @@
 
       fetch(`/api/part/${part.getId()}`, {
         method: 'post',
-        body: JSON.stringify(part.getParams()),
+        body: JSON.stringify(part.toObject()),
         headers: new Headers({
           'Content-Type': 'application/json',
         }),
