@@ -1,3 +1,23 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 16px;
+  margin: 2rem;
+
+  color: #333;
+}
+
 kleene-part {
-    display: block;
+  display: block;
+}
+
+select {
+  border: 1px solid #ddd;
+  border-radius: 0;
+  padding: 0.5rem;
+
+  box-shadow: none;
 }

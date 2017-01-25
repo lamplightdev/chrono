@@ -18,11 +18,13 @@ const template = (args) => {
     <form id='save' action='/part/${part.getId()}' method='post'>
       <input type='hidden' name='method' value='save'>
       <input type='hidden' name='id' value='${part.getId()}' />
-      <select name='type'>
-        ${typeOptions.map(type => (
-          `<option value='${type}' ${part.getType() === type ? 'selected' : ''}>${type}</option>`
-        )).join('')}
-      </select>
+      <div class='select-outer'>
+        <select name='type'>
+          ${typeOptions.map(type => (
+            `<option value='${type}' ${part.getType() === type ? 'selected' : ''}>${type}</option>`
+          )).join('')}
+        </select>
+      </div>
       <input name='string' type='text' value='${part.getString()}' />
       <button>Save</button>
     </form>
@@ -48,6 +50,7 @@ const template = (args) => {
       <input type='hidden' name='parts' value='${JSON.stringify(parts.toObject())}'>
       <textarea name='input'>This is some text that I wrote http://lamplightdev.com</textarea>
       <button>Calculate</button>
+      <div id='regexp'></div>
     </form>
   `);
 

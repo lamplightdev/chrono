@@ -8,6 +8,69 @@ class KleenePart extends HTMLElement {
       <style>
         :host {
         }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        form {
+          display: inline-block;
+        }
+
+        .select-outer, input, button, textarea {
+          font-family: Roboto, Arial, sans-serif;
+          font-size: 1rem;
+          line-height: 1.2rem;
+          display: inline-block;
+          background: #eee;
+          border: 1px solid #aaa;
+          border-radius: 0;
+          padding: 0.5rem;
+
+          box-shadow: none;
+        }
+
+        .select-outer {
+          position: relative;
+          min-width: 150px;
+        }
+
+        .select-outer:before {
+          content: '\\00a0';
+        }
+
+        .select-outer:after {
+          display: inline-block;
+          content: '➜';
+          transform: rotate(90deg);
+
+          position: absolute;
+          right: 0.5rem;
+          pointer-events: none;
+        }
+
+        .select-outer select {
+          display: inline-block;
+          appearance: none;
+          -webkit-appearance: none;
+          font-family: Roboto, Arial, sans-serif;
+          font-size: 1rem;
+          padding: 0 0.5rem;
+
+          border: 0;
+          border-radius: 0;
+          background: transparent;
+
+          position: absolute;
+          top: 0;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+        }
+
+        form#save button {
+          display: none;
+        }
       </style>
     `;
 
@@ -55,6 +118,8 @@ class KleenePart extends HTMLElement {
     const root = this.shadowRoot;
 
     root.querySelector('form#save').addEventListener('submit', this.onSave);
+    root.querySelector('[name=type]').addEventListener('change', this.onSave);
+    root.querySelector('[name=string]').addEventListener('keyup', this.onSave);
     root.querySelector('form#delete').addEventListener('submit', this.onDelete);
   }
 
@@ -62,6 +127,8 @@ class KleenePart extends HTMLElement {
     const root = this.shadowRoot;
 
     root.querySelector('form#save').removeEventListener('submit', this.onSave);
+    root.querySelector('[name=type]').removeEventListener('change', this.onSave);
+    root.querySelector('[name=string]').removeEventListener('keyup', this.onSave);
     root.querySelector('form#delete').removeEventListener('submit', this.onDelete);
   }
 
@@ -82,7 +149,9 @@ class KleenePart extends HTMLElement {
   onSave(event) {
     event.preventDefault();
 
-    const data = [...event.target.elements].reduce((previous, element) => {
+    const form = this.shadowRoot.querySelector('form#save');
+
+    const data = [...form.elements].reduce((previous, element) => {
       return Object.assign({}, previous, {
         [element.name]: element.value,
       });

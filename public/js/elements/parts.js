@@ -107,9 +107,10 @@ class KleeneParts extends HTMLElement {
       return previous[part.type](part.string);
     }, VerEx());
 
-    const input = this.querySelector('[name=input]').value;
+    const input = this.shadowRoot.querySelector('[name=input]').value;
+    const regexp = this.shadowRoot.querySelector('#regexp');
 
-    console.log(tester.test(input));
+    regexp.textContent = `${tester.test(input)}: ${tester.toRegExp()}`;
   }
 }
 

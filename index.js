@@ -87,7 +87,7 @@ app.post('/calculate', (req, res) => {
     return previous[part.type](part.string);
   }, VerEx());
 
-  console.log(tester.test(input));
+  console.log(tester.test(input), tester.toRegExp());
 
   res.redirect('/');
 });
