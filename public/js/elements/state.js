@@ -25,6 +25,10 @@ class KleeneState extends HTMLElement {
     });
   }
 
+  disconnectedCallback() {
+    // TODO: remove listeners
+  }
+
   onStateChange(action, data) {
     switch (action) {
       case 'state:partsave': {

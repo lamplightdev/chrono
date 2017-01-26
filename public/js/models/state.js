@@ -12,7 +12,7 @@
 
   class State {
     constructor({
-      parts: parts = new Parts(),
+      parts = new Parts(),
     } = {}) {
       this.parts = parts;
     }

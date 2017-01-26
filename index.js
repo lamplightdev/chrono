@@ -2,10 +2,12 @@ const express = require('express');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 
-const templateIndex = require('./templates/index');
-
 const StateServer = require('./public/js/models/state-server');
 const VerEx = require('verbal-expressions');
+
+const layoutPage = require('./public/js/layout/page');
+const templateHome = require('./public/js/templates/home');
+const templateAbout = require('./public/js/templates/about');
 
 const app = express();
 
@@ -14,14 +16,42 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static('public'));
 
-// TODO: use universal state mechanism
-
 const state = new StateServer();
 
+const navItems = [{
+  id: 'home',
+  title: 'Home',
+  path: '/',
+}, {
+  id: 'about',
+  title: 'About',
+  path: '/about',
+}];
+
 app.get('/', (req, res) => {
-  res.send(templateIndex({
+  const content = templateHome({
     state,
-  }));
+  });
+
+  const page = layoutPage({
+    title: 'Kleene - Home',
+    content,
+    navItems,
+  });
+
+  res.send(page);
+});
+
+app.get('/about', (req, res) => {
+  const content = templateAbout();
+
+  const page = layoutPage({
+    title: 'Kleene - About',
+    content,
+    navItems,
+  });
+
+  res.send(page);
 });
 
 app.post('/part', (req, res) => {
