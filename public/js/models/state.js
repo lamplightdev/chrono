@@ -1,60 +1,46 @@
-(() => {
-  let Part;
-  let Parts;
+const Part = require('./part');
+const Parts = require('./parts');
 
-  if (typeof module !== 'undefined' && module.exports) {
-    Part = require('./part');
-    Parts = require('./parts');
-  } else {
-    Part = window.Part;
-    Parts = window.Parts;
+class State {
+  constructor({
+    parts = new Parts(),
+  } = {}) {
+    this.parts = parts;
   }
 
-  class State {
-    constructor({
-      parts = new Parts(),
-    } = {}) {
-      this.parts = parts;
-    }
+  toObject() {
+    return {
+      parts: this.parts.toObject(),
+    };
+  }
 
-    toObject() {
-      return {
-        parts: this.parts.toObject(),
-      };
-    }
-
-    static fromObject(data) {
-      try {
-        return new this({
-          parts: Parts.fromObject(data.parts),
-        });
-      } catch (err) {
-        return new this({
-          parts: new Parts(),
-        });
-      }
-    }
-
-    getParts() {
-      return this.parts;
-    }
-
-    addPart() {
-      return this.parts.addPart(new Part());
-    }
-
-    savePart(data) {
-      return this.parts.savePart(new Part(data));
-    }
-
-    deletePart(id) {
-      return this.parts.deletePart(id);
+  static fromObject(data) {
+    try {
+      return new this({
+        parts: Parts.fromObject(data.parts),
+      });
+    } catch (err) {
+      return new this({
+        parts: new Parts(),
+      });
     }
   }
 
-  if (typeof module !== 'undefined' && module.exports) {
-    module.exports = State;
-  } else {
-    window.State = State;
+  getParts() {
+    return this.parts;
   }
-})();
+
+  addPart() {
+    return this.parts.addPart(new Part());
+  }
+
+  savePart(data) {
+    return this.parts.savePart(new Part(data));
+  }
+
+  deletePart(id) {
+    return this.parts.deletePart(id);
+  }
+}
+
+module.exports = State;

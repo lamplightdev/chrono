@@ -16,6 +16,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(express.static('public'));
 
+// TODO: router
+
 const state = new StateServer();
 
 const navItems = [{

@@ -1,3 +1,5 @@
+const template = require('./template');
+
 class KleeneNavItem extends HTMLElement {
   constructor() {
     super();
@@ -9,10 +11,14 @@ class KleeneNavItem extends HTMLElement {
         :host {
         }
       </style>
+
+      <template>
+        ${template()}
+      </template>
     `;
 
-    const template = document.querySelector('template#kleene-navitem');
-    const instance = template.content.cloneNode(true);
+    const templateContent = this.shadowRoot.querySelector('template');
+    const instance = templateContent.content.cloneNode(true);
     this.shadowRoot.appendChild(instance);
 
     this.onClick = this.onClick.bind(this);

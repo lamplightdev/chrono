@@ -1,3 +1,5 @@
+const StateClient = require('../../models/state-client');
+
 class KleeneState extends HTMLElement {
   constructor() {
     super();

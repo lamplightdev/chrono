@@ -1,3 +1,5 @@
+const template = require('./template');
+
 class KleenePart extends HTMLElement {
   constructor() {
     super();
@@ -72,10 +74,14 @@ class KleenePart extends HTMLElement {
           display: none;
         }
       </style>
+
+      <template>
+        ${template()}
+      </template>
     `;
 
-    const template = document.querySelector('template#kleene-part');
-    const instance = template.content.cloneNode(true);
+    const templateContent = this.shadowRoot.querySelector('template');
+    const instance = templateContent.content.cloneNode(true);
     this.shadowRoot.appendChild(instance);
 
     this._state = {};

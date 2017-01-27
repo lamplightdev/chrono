@@ -1,18 +1,6 @@
+const templateNav = require('../elements/nav/template');
+
 const layoutPage = (args) => {
-  const templateNavItem = item => (`
-    <li><a href='${item.path}'>${item.title}</a></li>
-  `);
-
-  const templateNav = items => (`
-    <nav>
-      <ul>
-      ${items.map(item => (
-        templateNavItem(item)
-      )).join('')}
-      </ul>
-    </nav>
-  `);
-
   return `
 <!DOCTYPE html>
 
@@ -37,33 +25,7 @@ const layoutPage = (args) => {
 
     <main>${args.content}</main>
 
-    <template id="kleene-nav">
-      ${templateNav([])}
-    </template>
-
-    <template id="kleene-navitem">
-      ${templateNavItem({
-        id: '',
-        title: '',
-        path: '',
-      })}
-    </template>
-
-    <script src='js/libs/verbalexpressions.js'></script>
-
-    <script src='js/models/part.js'></script>
-    <script src='js/models/parts.js'></script>
-    <script src='js/models/state.js'></script>
-    <script src='js/models/state-client.js'></script>
-
-    <script src='js/elements/nav.js'></script>
-    <script src='js/elements/navitem.js'></script>
-    <script src='js/elements/state.js'></script>
-    <script src='js/elements/parts.js'></script>
-    <script src='js/elements/part.js'></script>
-
-    <script src='js/templates/home.js'></script>
-    <script src='js/templates/about.js'></script>
+    <script src='js/app-dist.js'></script>
   </body>
 
 </html>

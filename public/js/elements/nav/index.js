@@ -1,3 +1,7 @@
+const template = require('./template');
+
+const templateAbout = require('../../templates/about');
+
 class KleeneNav extends HTMLElement {
   constructor() {
     super();
@@ -9,10 +13,14 @@ class KleeneNav extends HTMLElement {
         :host {
         }
       </style>
+
+      <template>
+        ${template()}
+      </template>
     `;
 
-    const template = document.querySelector('template#kleene-nav');
-    const instance = template.content.cloneNode(true);
+    const templateContent = this.shadowRoot.querySelector('template');
+    const instance = templateContent.content.cloneNode(true);
     this.shadowRoot.appendChild(instance);
   }
 

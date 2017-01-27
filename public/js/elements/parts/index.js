@@ -1,3 +1,6 @@
+const VerEx = require('verbal-expressions');
+const template = require('./template');
+
 class KleeneParts extends HTMLElement {
   constructor() {
     super();
@@ -9,10 +12,14 @@ class KleeneParts extends HTMLElement {
         :host {
         }
       </style>
+
+      <template>
+        ${template()}
+      </template>
     `;
 
-    const template = document.querySelector('template#kleene-parts');
-    const instance = template.content.cloneNode(true);
+    const templateContent = this.shadowRoot.querySelector('template');
+    const instance = templateContent.content.cloneNode(true);
     this.shadowRoot.appendChild(instance);
 
     this._state = [];

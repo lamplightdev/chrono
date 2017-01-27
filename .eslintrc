@@ -6,7 +6,8 @@
     "window": false,
     "document": false,
     "fetch": false,
-    "CustomEvent": false
+    "CustomEvent": false,
+    "Headers": false
   },
 
   "rules": {
