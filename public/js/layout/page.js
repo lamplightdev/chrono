@@ -1,6 +1,10 @@
 const templateNav = require('../elements/nav/template');
 
 const layoutPage = (args) => {
+  const state = args.state;
+
+  const stateString = JSON.stringify(state.toObject());
+
   return `
 <!DOCTYPE html>
 
@@ -19,11 +23,19 @@ const layoutPage = (args) => {
 
   <body>
 
-    <kleene-nav state='${JSON.stringify(args.navItems)}'>
-      ${templateNav(args.navItems)}
-    </kleene-nav>
+    <kleene-state state='${stateString}'>
+      <div slot='main'>
+        <kleene-nav state='${JSON.stringify(args.navItems)}'>
+          ${templateNav(args.navItems)}
+        </kleene-nav>
 
-    <main>${args.content}</main>
+        <kleene-router>
+          <div slot='main'>
+            <main>${args.content}</main>
+          </div>
+        </kleen-router>
+      </div>
+    </kleene-state>
 
     <script src='js/app-dist.js'></script>
   </body>

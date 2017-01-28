@@ -1,7 +1,5 @@
 const template = require('./template');
 
-const templateAbout = require('../../templates/about');
-
 class KleeneNav extends HTMLElement {
   constructor() {
     super();
@@ -59,19 +57,9 @@ class KleeneNav extends HTMLElement {
   }
 
   connectedCallback() {
-    this.addEventListener('nav:change', (event) => {
-      event.detail.event.preventDefault();
-
-      console.log('nav', event.detail);
-
-      document.querySelector('main').innerHTML = templateAbout({
-        who: 'Chris',
-      });
-    });
   }
 
   disconnectedCallback() {
-    // TODO: remove listeners
   }
 }
 

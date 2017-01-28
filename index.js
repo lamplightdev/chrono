@@ -32,10 +32,11 @@ const navItems = [{
 
 app.get('/', (req, res) => {
   const content = templateHome({
-    state,
+    state: state.toObject(),
   });
 
   const page = layoutPage({
+    state,
     title: 'Kleene - Home',
     content,
     navItems,
@@ -47,7 +48,12 @@ app.get('/', (req, res) => {
 app.get('/about', (req, res) => {
   const content = templateAbout();
 
+  state.changeRoute({
+    id: 'about',
+  });
+
   const page = layoutPage({
+    state,
     title: 'Kleene - About',
     content,
     navItems,

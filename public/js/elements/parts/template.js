@@ -1,10 +1,8 @@
-const Parts = require('../../models/parts');
-
 const templatePart = require('../part/template');
 
-module.exports = (parts = new Parts()) => (`
+module.exports = (parts = []) => (`
   <div id='parts'>
-    ${parts.getParts().map(part => (
+    ${parts.map(part => (
       templatePart(part)
     )).join('')}
   </div>
@@ -14,7 +12,7 @@ module.exports = (parts = new Parts()) => (`
   </form>
 
   <form id='calculate' action='/calculate' method='post'>
-    <input type='hidden' name='parts' value='${JSON.stringify(parts.toObject())}'>
+    <input type='hidden' name='parts' value='${JSON.stringify(parts)}'>
     <textarea name='input'>This is some text that I wrote http://lamplightdev.com</textarea>
     <button>Calculate</button>
     <div id='regexp'></div>

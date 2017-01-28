@@ -39,7 +39,7 @@ class KleeneNavItem extends HTMLElement {
   }
 
   onClick(event) {
-    this.dispatchEvent(new CustomEvent('nav:change', {
+    this.dispatchEvent(new CustomEvent('route:change', {
       detail: {
         event,
         data: this.state,
