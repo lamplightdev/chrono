@@ -31,6 +31,10 @@ const navItems = [{
 }];
 
 app.get('/', (req, res) => {
+  state.changeRoute({
+    id: 'home',
+  });
+
   const content = templateHome({
     state: state.toObject(),
   });
@@ -46,10 +50,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/about', (req, res) => {
-  const content = templateAbout();
-
   state.changeRoute({
     id: 'about',
+  });
+
+  const content = templateAbout({
+    state: state.toObject(),
   });
 
   const page = layoutPage({

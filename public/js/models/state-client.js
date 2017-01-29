@@ -1,6 +1,13 @@
 const State = require('./state');
 
 class StateClient extends State {
+  changeRoute(route) {
+    super.changeRoute(route);
+
+    history.pushState(route, route.title, route.path);
+    document.title = `Kleene - ${route.title}`;
+  }
+
   addPart() {
     const part = super.addPart();
 

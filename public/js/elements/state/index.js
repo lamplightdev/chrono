@@ -39,7 +39,6 @@ class KleeneState extends HTMLElement {
   onStateChange(action, data) {
     switch (action) {
       case 'route:change': {
-        // TODO: update url on route change (in StateClient)
         this._state.changeRoute(data);
         break;
       }
@@ -68,8 +67,6 @@ class KleeneState extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
       case 'state': {
-        // TODO: switch on which part of state has changed
-
         this._state = StateClient.fromObject(JSON.parse(newValue));
 
         const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];

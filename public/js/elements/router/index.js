@@ -28,30 +28,39 @@ class KleeneRouter extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
       case 'state': {
-        this._state = JSON.parse(newValue);
+        const newState = JSON.parse(newValue);
 
-        switch (this._state.route.id) {
-          case 'home': {
-            const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
-            main.innerHTML = templateHome({
-              state: this._state,
-            });
+        if (!this._state.route || newState.route.id !== this._state.route.id) {
+          switch (newState.route.id) {
+            case 'home': {
+              const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
+              main.innerHTML = templateHome({
+                state: newState,
+              });
 
-            const parts = main.querySelector('kleene-parts');
+              const parts = main.querySelector('kleene-parts');
 
-            parts.setAttribute('state', JSON.stringify(this._state.parts));
-            break;
+              parts.setAttribute('state', JSON.stringify(newState.parts));
+              break;
+            }
+            case 'about': {
+              const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
+              main.innerHTML = templateAbout({
+                who: 'Chris',
+              });
+              break;
+            }
+            default:
+              break;
           }
-          case 'about': {
-            const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
-            main.innerHTML = templateAbout({
-              who: 'Chris',
-            });
-            break;
-          }
-          default:
-            break;
+        } else if (newState.route.id === 'home') {
+          const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
+          const parts = main.querySelector('kleene-parts');
+
+          parts.setAttribute('state', JSON.stringify(newState.parts));
         }
+
+        this._state = newState;
         break;
       }
       default:

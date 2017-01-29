@@ -29,6 +29,8 @@ class State {
       return new this({
         route: {
           id: 'home',
+          title: 'Home',
+          path: '/',
         },
         parts: new Parts(),
       });

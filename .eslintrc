@@ -7,7 +7,8 @@
     "document": false,
     "fetch": false,
     "CustomEvent": false,
-    "Headers": false
+    "Headers": false,
+    "history": false
   },
 
   "rules": {
