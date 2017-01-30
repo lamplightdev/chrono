@@ -56,6 +56,7 @@ app.get('/about', (req, res) => {
 
   const content = templateAbout({
     state: state.toObject(),
+    who: 'Mr NO JS',
   });
 
   const page = layoutPage({
