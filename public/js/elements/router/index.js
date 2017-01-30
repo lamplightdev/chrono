@@ -15,6 +15,16 @@ class KleeneRouter extends HTMLElement {
   }
 
   connectedCallback() {
+    window.addEventListener('popstate', (event) => {
+      this.dispatchEvent(new CustomEvent('route:change', {
+        detail: {
+          replace: true,
+          data: event.state,
+        },
+        bubbles: true,
+        composed: true,
+      }));
+    });
   }
 
   disconnectedCallback() {

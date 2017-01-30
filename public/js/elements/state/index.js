@@ -15,9 +15,13 @@ class KleeneState extends HTMLElement {
 
   connectedCallback() {
     this.addEventListener('route:change', (event) => {
-      event.detail.event.preventDefault();
+      if (event.detail.event) {
+        event.detail.event.preventDefault();
+      }
 
-      this.onStateChange('route:change', event.detail.data);
+      this.onStateChange('route:change', Object.assign({}, event.detail.data, {
+        replace: event.detail.replace,
+      }));
     });
     this.addEventListener('state:partsave', (event) => {
       this.onStateChange('state:partsave', event.detail);
