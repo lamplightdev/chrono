@@ -1,21 +1,26 @@
 const Part = require('./part');
 const Parts = require('./parts');
 
+let nextTimerId = 0;
+
 class State {
   constructor({
     route = {
       id: 'home',
     },
     parts = new Parts(),
+    timers = [],
   } = {}) {
     this.route = route;
     this.parts = parts;
+    this.timers = timers;
   }
 
   toObject() {
     return {
       parts: this.parts.toObject(),
       route: this.route,
+      timers: this.timers,
     };
   }
 
@@ -24,6 +29,7 @@ class State {
       return new this({
         route: data.route,
         parts: Parts.fromObject(data.parts),
+        timers: data.timers,
       });
     } catch (err) {
       return new this({
@@ -33,6 +39,7 @@ class State {
           path: '/',
         },
         parts: new Parts(),
+        timers: [],
       });
     }
   }
@@ -55,6 +62,25 @@ class State {
 
   deletePart(id) {
     return this.parts.deletePart(id);
+  }
+
+  addTimer(start) {
+    const timer = {
+      start,
+      end: null,
+    };
+
+    timer.id = nextTimerId;
+    nextTimerId += 1;
+
+    this.timers.push(timer);
+
+    return timer;
+  }
+
+  endTimer(data) {
+    const foundTimer = this.timers.find(timer => timer.id === data.id);
+    foundTimer.end = data.time;
   }
 }
 

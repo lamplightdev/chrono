@@ -23,6 +23,7 @@ class KleeneState extends HTMLElement {
         replace: event.detail.replace,
       }));
     });
+
     this.addEventListener('state:partsave', (event) => {
       this.onStateChange('state:partsave', event.detail);
     });
@@ -33,6 +34,14 @@ class KleeneState extends HTMLElement {
 
     this.addEventListener('state:partadd', (event) => {
       this.onStateChange('state:partadd', event.detail);
+    });
+
+    this.addEventListener('state:timeradd', (event) => {
+      this.onStateChange('state:timeradd', event.detail);
+    });
+
+    this.addEventListener('state:timerend', (event) => {
+      this.onStateChange('state:timerend', event.detail);
     });
   }
 
@@ -55,6 +64,14 @@ class KleeneState extends HTMLElement {
         break;
       case 'state:partadd': {
         this._state.addPart();
+        break;
+      }
+      case 'state:timeradd': {
+        this._state.addTimer(data);
+        break;
+      }
+      case 'state:timerend': {
+        this._state.endTimer(data);
         break;
       }
       default:

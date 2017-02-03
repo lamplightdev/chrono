@@ -1,5 +1,6 @@
 const templateHome = require('../../templates/home');
 const templateAbout = require('../../templates/about');
+const templateTimers = require('../../templates/timers');
 
 class KleeneRouter extends HTMLElement {
   constructor() {
@@ -60,6 +61,16 @@ class KleeneRouter extends HTMLElement {
               });
               break;
             }
+            case 'timers': {
+              const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
+              main.innerHTML = templateTimers({
+                state: newState,
+              });
+
+              const timers = main.querySelector('kleene-timers');
+              timers.setAttribute('state', JSON.stringify(newState.timers));
+              break;
+            }
             default:
               break;
           }
@@ -68,6 +79,11 @@ class KleeneRouter extends HTMLElement {
           const parts = main.querySelector('kleene-parts');
 
           parts.setAttribute('state', JSON.stringify(newState.parts));
+        } else if (newState.route.id === 'timers') {
+          const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
+          const timers = main.querySelector('kleene-timers');
+
+          timers.setAttribute('state', JSON.stringify(newState.timers));
         }
 
         this._state = newState;

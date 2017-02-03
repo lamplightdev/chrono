@@ -8,6 +8,7 @@ const VerEx = require('verbal-expressions');
 const layoutPage = require('./public/js/layout/page');
 const templateHome = require('./public/js/templates/home');
 const templateAbout = require('./public/js/templates/about');
+const templateTimers = require('./public/js/templates/timers');
 
 const app = express();
 
@@ -28,6 +29,10 @@ const navItems = [{
   id: 'about',
   title: 'About',
   path: '/about',
+}, {
+  id: 'timers',
+  title: 'Timers',
+  path: '/timers',
 }];
 
 app.get('/', (req, res) => {
@@ -62,6 +67,25 @@ app.get('/about', (req, res) => {
   const page = layoutPage({
     state,
     title: 'Kleene - About',
+    content,
+    navItems,
+  });
+
+  res.send(page);
+});
+
+app.get('/timers', (req, res) => {
+  state.changeRoute({
+    id: 'timers',
+  });
+
+  const content = templateTimers({
+    state: state.toObject(),
+  });
+
+  const page = layoutPage({
+    state,
+    title: 'Kleene - Timers',
     content,
     navItems,
   });

@@ -4,3 +4,6 @@ require('./elements/nav');
 require('./elements/navitem');
 require('./elements/parts');
 require('./elements/part');
+require('./elements/timeradd');
+require('./elements/timer');
+require('./elements/timers');
