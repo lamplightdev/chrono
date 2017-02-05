@@ -25,10 +25,12 @@ class KleeneTimer extends HTMLElement {
     const instance = templateContent.content.cloneNode(true);
     this.shadowRoot.appendChild(instance);
 
-    this._state = {};
-    this._stateString = JSON.stringify(this._state);
+    this.animation = null;
+    this._lastElapsed = 0;
 
     this.end = this.end.bind(this);
+    this.pause = this.pause.bind(this);
+    this.increment = this.increment.bind(this);
   }
 
   static get observedAttributes() {
@@ -48,12 +50,7 @@ class KleeneTimer extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
       case 'state':
-        if (this._stateString !== newValue) {
-          this._stateString = newValue;
-          this._state = this._stateString ? JSON.parse(this._stateString) : {};
-
-          this.init();
-        }
+        this.update(JSON.parse(newValue));
         break;
       default:
         break;
@@ -62,24 +59,33 @@ class KleeneTimer extends HTMLElement {
 
   connectedCallback() {
     const root = this.shadowRoot;
-    const form = root.querySelector('form');
-    form.addEventListener('submit', this.end);
+    const formEnd = root.querySelector('form#end');
+    formEnd.addEventListener('submit', this.end);
+    const formPause = root.querySelector('form#pause');
+    formPause.addEventListener('submit', this.pause);
+
+    this.animation = window.requestAnimationFrame(this.increment);
   }
 
   disconnectedCallback() {
     const root = this.shadowRoot;
-    const form = root.querySelector('form');
-    form.removeEventListener('submit', this.end);
+    const formEnd = root.querySelector('form#end');
+    formEnd.removeEventListener('submit', this.end);
+    const formPause = root.querySelector('form#pause');
+    formPause.removeEventListener('submit', this.pause);
+
+    window.cancelAnimationFrame(this.animation);
   }
 
-  init() {
+  update(timer) {
     const root = this.shadowRoot;
 
-    root.querySelector('#id').textContent = this._state.id;
-    root.querySelector('#start').textContent = this._state.start;
-    root.querySelector('#end').textContent = this._state.end;
+    root.querySelector('#id').textContent = timer.id;
+    root.querySelector('#start').textContent = timer.start;
+    root.querySelector('#end').textContent = timer.end;
+    root.querySelector('#elapsed').textContent = timer.end ? (timer.end - timer.start) : (Date.now() - timer.start);
 
-    this.setAttribute('stateid', this._state.id);
+    this.setAttribute('stateid', timer.id);
   }
 
   end(event) {
@@ -87,12 +93,43 @@ class KleeneTimer extends HTMLElement {
 
     this.dispatchEvent(new CustomEvent('state:timerend', {
       detail: {
-        id: this._state.id,
+        id: this.state.id,
         time: Date.now(),
       },
       bubbles: true,
       composed: true,
     }));
+  }
+
+  pause(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('state:timerpause', {
+      detail: {
+        id: this.state.id,
+      },
+      bubbles: true,
+      composed: true,
+    }));
+
+    if (!this.state.paused) {
+      this.animation = window.requestAnimationFrame(this.increment);
+    } else {
+      window.cancelAnimationFrame(this.animation);
+    }
+  }
+
+  increment() {
+    const diff = Math.floor((Date.now() - this.state.start) / 10);
+
+    if (diff > this._lastElapsed) {
+      this.update(this.state);
+    }
+
+    this._lastElapsed = diff;
+    if (!this.state.end && !this.state.paused) {
+      this.animation = window.requestAnimationFrame(this.increment);
+    }
   }
 }
 

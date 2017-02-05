@@ -43,6 +43,10 @@ class KleeneState extends HTMLElement {
     this.addEventListener('state:timerend', (event) => {
       this.onStateChange('state:timerend', event.detail);
     });
+
+    this.addEventListener('state:timerpause', (event) => {
+      this.onStateChange('state:timerpause', event.detail);
+    });
   }
 
   disconnectedCallback() {
@@ -72,6 +76,10 @@ class KleeneState extends HTMLElement {
       }
       case 'state:timerend': {
         this._state.endTimer(data);
+        break;
+      }
+      case 'state:timerpause': {
+        this._state.pauseTimer(data);
         break;
       }
       default:

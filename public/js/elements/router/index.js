@@ -48,10 +48,6 @@ class KleeneRouter extends HTMLElement {
               main.innerHTML = templateHome({
                 state: newState,
               });
-
-              const parts = main.querySelector('kleene-parts');
-
-              parts.setAttribute('state', JSON.stringify(newState.parts));
               break;
             }
             case 'about': {
@@ -66,9 +62,6 @@ class KleeneRouter extends HTMLElement {
               main.innerHTML = templateTimers({
                 state: newState,
               });
-
-              const timers = main.querySelector('kleene-timers');
-              timers.setAttribute('state', JSON.stringify(newState.timers));
               break;
             }
             default:

@@ -7,7 +7,7 @@ const template = (args = {}) => {
     <h1>Timers</h1>
     <kleene-timeradd></kleene-timeradd>
 
-    <kleene-timers>
+    <kleene-timers state='${JSON.stringify(state.timers)}'>
       ${templateTimers(state.timers)}
     </kleene-timers>
   `;
