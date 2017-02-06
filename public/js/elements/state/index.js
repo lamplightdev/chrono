@@ -24,20 +24,12 @@ class KleeneState extends HTMLElement {
       }));
     });
 
-    this.addEventListener('state:partsave', (event) => {
-      this.onStateChange('state:partsave', event.detail);
-    });
-
-    this.addEventListener('state:partdelete', (event) => {
-      this.onStateChange('state:partdelete', event.detail);
-    });
-
-    this.addEventListener('state:partadd', (event) => {
-      this.onStateChange('state:partadd', event.detail);
-    });
-
     this.addEventListener('state:timeradd', (event) => {
       this.onStateChange('state:timeradd', event.detail);
+    });
+
+    this.addEventListener('state:timerreset', (event) => {
+      this.onStateChange('state:timerreset', event.detail);
     });
 
     this.addEventListener('state:timerend', (event) => {
@@ -46,6 +38,10 @@ class KleeneState extends HTMLElement {
 
     this.addEventListener('state:timerpause', (event) => {
       this.onStateChange('state:timerpause', event.detail);
+    });
+
+    this.addEventListener('state:timersplit', (event) => {
+      this.onStateChange('state:timersplit', event.detail);
     });
   }
 
@@ -59,19 +55,12 @@ class KleeneState extends HTMLElement {
         this._state.changeRoute(data);
         break;
       }
-      case 'state:partsave': {
-        this._state.savePart(data);
-        break;
-      }
-      case 'state:partdelete':
-        this._state.deletePart(data);
-        break;
-      case 'state:partadd': {
-        this._state.addPart();
-        break;
-      }
       case 'state:timeradd': {
         this._state.addTimer(data);
+        break;
+      }
+      case 'state:timerreset': {
+        this._state.resetTimer();
         break;
       }
       case 'state:timerend': {
@@ -80,6 +69,10 @@ class KleeneState extends HTMLElement {
       }
       case 'state:timerpause': {
         this._state.pauseTimer(data);
+        break;
+      }
+      case 'state:timersplit': {
+        this._state.splitTimer(data);
         break;
       }
       default:

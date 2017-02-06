@@ -1,6 +1,3 @@
-const Part = require('./part');
-const Parts = require('./parts');
-
 let nextTimerId = 0;
 
 class State {
@@ -8,17 +5,14 @@ class State {
     route = {
       id: 'home',
     },
-    parts = new Parts(),
     timers = [],
   } = {}) {
     this.route = route;
-    this.parts = parts;
     this.timers = timers;
   }
 
   toObject() {
     return {
-      parts: this.parts.toObject(),
       route: this.route,
       timers: this.timers,
     };
@@ -28,7 +22,6 @@ class State {
     try {
       return new this({
         route: data.route,
-        parts: Parts.fromObject(data.parts),
         timers: data.timers,
       });
     } catch (err) {
@@ -38,7 +31,6 @@ class State {
           title: 'Home',
           path: '/',
         },
-        parts: new Parts(),
         timers: [],
       });
     }
@@ -48,34 +40,25 @@ class State {
     this.route = route;
   }
 
-  getParts() {
-    return this.parts;
-  }
-
-  addPart() {
-    return this.parts.addPart(new Part());
-  }
-
-  savePart(data) {
-    return this.parts.savePart(new Part(data));
-  }
-
-  deletePart(id) {
-    return this.parts.deletePart(id);
-  }
-
   addTimer(start) {
     const timer = {
+      id: false,
       start,
-      end: null,
+      end: false,
+      paused: false,
+      splits: [],
     };
 
-    timer.id = nextTimerId;
+    this.timers.push(Object.assign({}, timer, {
+      id: nextTimerId,
+    }));
     nextTimerId += 1;
 
-    this.timers.push(timer);
-
     return timer;
+  }
+
+  resetTimer() {
+    this.timers = [];
   }
 
   endTimer(data) {
@@ -86,6 +69,11 @@ class State {
   pauseTimer(data) {
     const foundTimer = this.timers.find(timer => timer.id === data.id);
     foundTimer.paused = !foundTimer.paused;
+  }
+
+  splitTimer(data) {
+    const foundTimer = this.timers.find(timer => timer.id === data.id);
+    foundTimer.splits.push(data.time - foundTimer.start);
   }
 }
 

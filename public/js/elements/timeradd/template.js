@@ -1,7 +1,10 @@
 module.exports = () => (`
   <div class='kleene-addtimer'>
-    <form action='/timer/add' method='post'>
+    <form id='add'>
       <button>Add</button>
+    </form>
+    <form id='reset'>
+      <button>Reset</button>
     </form>
   </div>
 `);

@@ -26,18 +26,23 @@ class KleeneTimerAdd extends HTMLElement {
     this.shadowRoot.appendChild(instance);
 
     this._state = {};
+
+    this.onAdd = this.onAdd.bind(this);
+    this.onReset = this.onReset.bind(this);
   }
 
   connectedCallback() {
     const root = this.shadowRoot;
 
-    root.querySelector('form').addEventListener('submit', this.onAdd);
+    root.querySelector('form#add').addEventListener('submit', this.onAdd);
+    root.querySelector('form#reset').addEventListener('submit', this.onReset);
   }
 
   disconnectedCallback() {
     const root = this.shadowRoot;
 
-    root.querySelector('form').removeEventListener('submit', this.onAdd);
+    root.querySelector('form#add').removeEventListener('submit', this.onAdd);
+    root.querySelector('form#reset').removeEventListener('submit', this.onReset);
   }
 
   onAdd(event) {
@@ -45,6 +50,15 @@ class KleeneTimerAdd extends HTMLElement {
 
     this.dispatchEvent(new CustomEvent('state:timeradd', {
       detail: Date.now(),
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  onReset(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('state:timerreset', {
       bubbles: true,
       composed: true,
     }));

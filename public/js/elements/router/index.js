@@ -67,11 +67,6 @@ class KleeneRouter extends HTMLElement {
             default:
               break;
           }
-        } else if (newState.route.id === 'home') {
-          const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
-          const parts = main.querySelector('kleene-parts');
-
-          parts.setAttribute('state', JSON.stringify(newState.parts));
         } else if (newState.route.id === 'timers') {
           const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
           const timers = main.querySelector('kleene-timers');

@@ -87,7 +87,8 @@ class KleeneTimers extends HTMLElement {
   }
 
   deleteTimer(timer) {
-
+    const component = this.shadowRoot.querySelector(`kleene-timer[stateid='${timer.id}']`);
+    component.remove();
   }
 }
 

@@ -27,9 +27,11 @@ class KleeneTimer extends HTMLElement {
 
     this.animation = null;
     this._lastElapsed = 0;
+    this._resolution = 100;
 
     this.end = this.end.bind(this);
     this.pause = this.pause.bind(this);
+    this.split = this.split.bind(this);
     this.increment = this.increment.bind(this);
   }
 
@@ -63,6 +65,8 @@ class KleeneTimer extends HTMLElement {
     formEnd.addEventListener('submit', this.end);
     const formPause = root.querySelector('form#pause');
     formPause.addEventListener('submit', this.pause);
+    const formSplit = root.querySelector('form#split');
+    formSplit.addEventListener('submit', this.split);
 
     this.animation = window.requestAnimationFrame(this.increment);
   }
@@ -73,6 +77,8 @@ class KleeneTimer extends HTMLElement {
     formEnd.removeEventListener('submit', this.end);
     const formPause = root.querySelector('form#pause');
     formPause.removeEventListener('submit', this.pause);
+    const formSplit = root.querySelector('form#split');
+    formSplit.removeEventListener('submit', this.split);
 
     window.cancelAnimationFrame(this.animation);
   }
@@ -83,7 +89,23 @@ class KleeneTimer extends HTMLElement {
     root.querySelector('#id').textContent = timer.id;
     root.querySelector('#start').textContent = timer.start;
     root.querySelector('#end').textContent = timer.end;
-    root.querySelector('#elapsed').textContent = timer.end ? (timer.end - timer.start) : (Date.now() - timer.start);
+
+    let elapsed = timer.end ? (timer.end - timer.start) : (Date.now() - timer.start);
+    elapsed = Math.floor(elapsed / this._resolution);
+    root.querySelector('#elapsed').textContent = elapsed;
+
+    const splitsContainer = root.querySelector('#splits');
+    timer.splits.forEach((split, splitIndex) => {
+      const splitComponent = splitsContainer.querySelector(`#split-${splitIndex}`);
+      if (splitComponent) {
+        splitComponent.setAttribute('state', JSON.stringify(split));
+      } else {
+        const kleeneTimerSplit = document.createElement('kleene-timersplit');
+        kleeneTimerSplit.setAttribute('state', JSON.stringify(split));
+        kleeneTimerSplit.setAttribute('id', `split-${splitIndex}`);
+        splitsContainer.appendChild(kleeneTimerSplit);
+      }
+    });
 
     this.setAttribute('stateid', timer.id);
   }
@@ -114,13 +136,24 @@ class KleeneTimer extends HTMLElement {
 
     if (!this.state.paused) {
       this.animation = window.requestAnimationFrame(this.increment);
-    } else {
-      window.cancelAnimationFrame(this.animation);
     }
   }
 
+  split(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('state:timersplit', {
+      detail: {
+        id: this.state.id,
+        time: Date.now(),
+      },
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
   increment() {
-    const diff = Math.floor((Date.now() - this.state.start) / 10);
+    const diff = Math.floor((Date.now() - this.state.start) / this._resolution);
 
     if (diff > this._lastElapsed) {
       this.update(this.state);
