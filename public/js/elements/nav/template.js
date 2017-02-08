@@ -1,13 +1,11 @@
-const templateNavItem = require('../navitem/template');
-
 const templateNav = (items = []) => (`
   <nav>
-    <ul>
-    ${items.map(item => (
-      templateNavItem(item)
-    )).join('')}
-    </ul>
+    ${items.map(item => (`
+      <a href='${item.path}'>${item.title}</a>
+    `)).join('')}
+
   </nav>
+  <div class='border'></div>
 `);
 
 module.exports = templateNav;

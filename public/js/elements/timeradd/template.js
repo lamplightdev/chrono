@@ -1,10 +1,10 @@
 module.exports = () => (`
-  <div class='kleene-addtimer'>
+  <div class='chrono-addtimer'>
     <form id='add'>
-      <button>Add</button>
+      <chrono-button>Add</chrono-button>
     </form>
     <form id='reset'>
-      <button>Reset</button>
+      <chrono-button>Reset</chrono-button>
     </form>
   </div>
 `);

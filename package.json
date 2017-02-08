@@ -1,13 +1,12 @@
 {
-  "name": "kleene",
+  "name": "chrono",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "dependencies": {
     "body-parser": "^1.16.0",
     "compression": "^1.6.2",
-    "express": "^4.14.0",
-    "verbal-expressions": "^0.3.0"
+    "express": "^4.14.0"
   },
   "devDependencies": {
     "eslint": "^3.13.1",
@@ -21,12 +20,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lamplightdev/kleene.git"
+    "url": "git+https://github.com/lamplightdev/chrono.git"
   },
   "author": "Chris Haynes",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/lamplightdev/kleene/issues"
+    "url": "https://github.com/lamplightdev/chrono/issues"
   },
-  "homepage": "https://github.com/lamplightdev/kleene#readme"
+  "homepage": "https://github.com/lamplightdev/chrono#readme"
 }

@@ -1,6 +1,6 @@
 const template = require('./template');
 
-class KleeneTimer extends HTMLElement {
+class ChronoTimer extends HTMLElement {
   constructor() {
     super();
 
@@ -91,7 +91,22 @@ class KleeneTimer extends HTMLElement {
     root.querySelector('#end').textContent = timer.end;
 
     let elapsed = timer.end ? (timer.end - timer.start) : (Date.now() - timer.start);
-    elapsed = Math.floor(elapsed / this._resolution);
+    elapsed = Math.floor(elapsed / (1000 / this._resolution));
+    elapsed = elapsed.toString();
+    if (elapsed.length < 2) {
+      elapsed = `0${elapsed}`;
+    }
+    if (elapsed.length < 3) {
+      elapsed = `0${elapsed}`;
+    }
+    if (elapsed.length < 4) {
+      elapsed = `0${elapsed}`;
+    }
+    if (elapsed.length < 5) {
+      elapsed = `0${elapsed}`;
+    }
+
+    elapsed = `${elapsed.substring(0, 2)}:${elapsed.substring(2)}`;
     root.querySelector('#elapsed').textContent = elapsed;
 
     const splitsContainer = root.querySelector('#splits');
@@ -100,10 +115,10 @@ class KleeneTimer extends HTMLElement {
       if (splitComponent) {
         splitComponent.setAttribute('state', JSON.stringify(split));
       } else {
-        const kleeneTimerSplit = document.createElement('kleene-timersplit');
-        kleeneTimerSplit.setAttribute('state', JSON.stringify(split));
-        kleeneTimerSplit.setAttribute('id', `split-${splitIndex}`);
-        splitsContainer.appendChild(kleeneTimerSplit);
+        const chronoTimerSplit = document.createElement('chrono-timersplit');
+        chronoTimerSplit.setAttribute('state', JSON.stringify(split));
+        chronoTimerSplit.setAttribute('id', `split-${splitIndex}`);
+        splitsContainer.appendChild(chronoTimerSplit);
       }
     });
 
@@ -153,7 +168,7 @@ class KleeneTimer extends HTMLElement {
   }
 
   increment() {
-    const diff = Math.floor((Date.now() - this.state.start) / this._resolution);
+    const diff = Math.floor((Date.now() - this.state.start) / (1000 / this._resolution));
 
     if (diff > this._lastElapsed) {
       this.update(this.state);
@@ -166,4 +181,4 @@ class KleeneTimer extends HTMLElement {
   }
 }
 
-window.customElements.define('kleene-timer', KleeneTimer);
+window.customElements.define('chrono-timer', ChronoTimer);

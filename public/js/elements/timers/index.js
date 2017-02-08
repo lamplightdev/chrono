@@ -1,6 +1,6 @@
 const template = require('./template');
 
-class KleeneTimers extends HTMLElement {
+class ChronoTimers extends HTMLElement {
   constructor() {
     super();
 
@@ -76,20 +76,20 @@ class KleeneTimers extends HTMLElement {
   }
 
   addTimer(timer) {
-    const kleeneTimer = document.createElement('kleene-timer');
-    kleeneTimer.setAttribute('state', JSON.stringify(timer));
-    this.shadowRoot.querySelector('#timers').appendChild(kleeneTimer);
+    const chronoTimer = document.createElement('chrono-timer');
+    chronoTimer.setAttribute('state', JSON.stringify(timer));
+    this.shadowRoot.querySelector('#timers').appendChild(chronoTimer);
   }
 
   editTimer(timer) {
-    const component = this.shadowRoot.querySelector(`kleene-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
     component.setAttribute('state', JSON.stringify(timer));
   }
 
   deleteTimer(timer) {
-    const component = this.shadowRoot.querySelector(`kleene-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
     component.remove();
   }
 }
 
-window.customElements.define('kleene-timers', KleeneTimers);
+window.customElements.define('chrono-timers', ChronoTimers);

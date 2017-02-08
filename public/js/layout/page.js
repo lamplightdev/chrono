@@ -23,19 +23,18 @@ const layoutPage = (args) => {
 
   <body>
 
-    <kleene-state state='${stateString}'>
+    <chrono-state state='${stateString}'>
       <div slot='main'>
-        <kleene-nav state='${JSON.stringify(args.navItems)}'>
-          ${templateNav(args.navItems)}
-        </kleene-nav>
-
-        <kleene-router>
+        <chrono-nav state='${JSON.stringify(state.routes)}'>
+          ${templateNav(state.routes)}
+        </chrono-nav>
+        <chrono-router>
           <div slot='main'>
             <main>${args.content}</main>
           </div>
-        </kleen-router>
+        </chrono-router>
       </div>
-    </kleene-state>
+    </chrono-state>
 
     <script src='js/app-dist.js'></script>
   </body>

@@ -3,7 +3,6 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 
 const StateServer = require('./public/js/models/state-server');
-const VerEx = require('verbal-expressions');
 
 const layoutPage = require('./public/js/layout/page');
 const templateHome = require('./public/js/templates/home');
@@ -19,21 +18,22 @@ app.use(express.static('public'));
 
 // TODO: router
 
-const state = new StateServer();
-
-const navItems = [{
-  id: 'home',
-  title: 'Home',
-  path: '/',
-}, {
-  id: 'about',
-  title: 'About',
-  path: '/about',
-}, {
-  id: 'timers',
-  title: 'Timers',
-  path: '/timers',
-}];
+const state = new StateServer({
+  routes: [{
+    id: 'home',
+    title: 'Home',
+    path: '/',
+    current: true,
+  }, {
+    id: 'about',
+    title: 'About',
+    path: '/about',
+  }, {
+    id: 'timers',
+    title: 'Timers',
+    path: '/timers',
+  }],
+});
 
 app.get('/', (req, res) => {
   state.changeRoute({
@@ -46,9 +46,8 @@ app.get('/', (req, res) => {
 
   const page = layoutPage({
     state,
-    title: 'Kleene - Home',
+    title: 'Chrono - Home',
     content,
-    navItems,
   });
 
   res.send(page);
@@ -66,9 +65,8 @@ app.get('/about', (req, res) => {
 
   const page = layoutPage({
     state,
-    title: 'Kleene - About',
+    title: 'Chrono - About',
     content,
-    navItems,
   });
 
   res.send(page);
@@ -85,15 +83,14 @@ app.get('/timers', (req, res) => {
 
   const page = layoutPage({
     state,
-    title: 'Kleene - Timers',
+    title: 'Chrono - Timers',
     content,
-    navItems,
   });
 
   res.send(page);
 });
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log(`Kleene listening on port ${process.env.PORT || 3000}`);
+  console.log(`Chrono listening on port ${process.env.PORT || 3000}`);
 });
 

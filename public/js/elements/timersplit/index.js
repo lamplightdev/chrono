@@ -1,6 +1,6 @@
 const template = require('./template');
 
-class KleeneTimerSplit extends HTMLElement {
+class ChronoTimerSplit extends HTMLElement {
   constructor() {
     super();
 
@@ -59,10 +59,10 @@ class KleeneTimerSplit extends HTMLElement {
   update(split) {
     const root = this.shadowRoot;
 
-    const container = root.querySelector('.kleene-timersplit');
+    const container = root.querySelector('.chrono-timersplit');
 
     container.textContent = split / 1000;
   }
 }
 
-window.customElements.define('kleene-timersplit', KleeneTimerSplit);
+window.customElements.define('chrono-timersplit', ChronoTimerSplit);

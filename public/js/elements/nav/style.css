@@ -1,0 +1,55 @@
+module.exports = () => (`
+
+:host {
+  display: block;
+  position: relative;
+}
+
+nav {
+  background-color: red;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.border {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  bottom: 0;
+  height: 5px;
+  width: 0;
+  background-color: blue;
+
+  transform: translate(0px);
+  transition: transform 0.1s ease-in 0s;
+
+  display: none;
+}
+
+.border.show {
+  display: block;
+}
+
+a {
+  flex-grow: 1;
+  width: 100%;
+  display: block;
+  text-align: center;
+  padding: 1em 0;
+
+  border-bottom: 5px solid transparent;
+  text-decoration: none;
+  color: white;
+}
+
+a.current {
+  border-bottom-color: blue;
+}
+
+a.hide {
+  border-bottom-color: transparent;
+}
+
+`);

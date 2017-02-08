@@ -1,6 +1,6 @@
 const template = require('./template');
 
-class KleeneTimerAdd extends HTMLElement {
+class ChronoTimerAdd extends HTMLElement {
   constructor() {
     super();
 
@@ -29,20 +29,25 @@ class KleeneTimerAdd extends HTMLElement {
 
     this.onAdd = this.onAdd.bind(this);
     this.onReset = this.onReset.bind(this);
+
   }
 
   connectedCallback() {
     const root = this.shadowRoot;
 
     root.querySelector('form#add').addEventListener('submit', this.onAdd);
+    root.querySelector('form#add').addEventListener('chrono:formsubmit', this.onAdd);
     root.querySelector('form#reset').addEventListener('submit', this.onReset);
+    root.querySelector('form#reset').addEventListener('chrono:formsubmit', this.onReset);
   }
 
   disconnectedCallback() {
     const root = this.shadowRoot;
 
     root.querySelector('form#add').removeEventListener('submit', this.onAdd);
+    root.querySelector('form#add').removeEventListener('chrono:formsubmit', this.onAdd);
     root.querySelector('form#reset').removeEventListener('submit', this.onReset);
+    root.querySelector('form#reset').removeEventListener('chrono:formsubmit', this.onReset);
   }
 
   onAdd(event) {
@@ -65,4 +70,4 @@ class KleeneTimerAdd extends HTMLElement {
   }
 }
 
-window.customElements.define('kleene-timeradd', KleeneTimerAdd);
+window.customElements.define('chrono-timeradd', ChronoTimerAdd);

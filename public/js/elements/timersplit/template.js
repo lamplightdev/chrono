@@ -1,5 +1,5 @@
 module.exports = (split = 0) => (`
-  <div class='kleene-timersplit'>
+  <div class='chrono-timersplit'>
     ${split}
   </div>
 `);

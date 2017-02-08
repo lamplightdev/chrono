@@ -2,18 +2,16 @@ let nextTimerId = 0;
 
 class State {
   constructor({
-    route = {
-      id: 'home',
-    },
+    routes = [],
     timers = [],
   } = {}) {
-    this.route = route;
+    this.routes = routes;
     this.timers = timers;
   }
 
   toObject() {
     return {
-      route: this.route,
+      routes: this.routes,
       timers: this.timers,
     };
   }
@@ -21,23 +19,23 @@ class State {
   static fromObject(data) {
     try {
       return new this({
-        route: data.route,
+        routes: data.routes,
         timers: data.timers,
       });
     } catch (err) {
       return new this({
-        route: {
-          id: 'home',
-          title: 'Home',
-          path: '/',
-        },
+        routes: [],
         timers: [],
       });
     }
   }
 
-  changeRoute(route) {
-    this.route = route;
+  changeRoute(newRoute) {
+    this.routes = this.routes.map(route => (
+      Object.assign({}, route, {
+        current: route.id === newRoute.id,
+      })
+    ));
   }
 
   addTimer(start) {

@@ -1,0 +1,17 @@
+module.exports = () => (`
+
+:host {
+
+}
+
+button {
+  width: 60px;
+  height: 60px;
+  border-radius: 60px;
+
+  color: white;
+  background-color: blue;
+  border: none;
+}
+
+`);

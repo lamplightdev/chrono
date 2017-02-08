@@ -2,7 +2,7 @@ const templateHome = require('../../templates/home');
 const templateAbout = require('../../templates/about');
 const templateTimers = require('../../templates/timers');
 
-class KleeneRouter extends HTMLElement {
+class ChronoRouter extends HTMLElement {
   constructor() {
     super();
 
@@ -41,8 +41,11 @@ class KleeneRouter extends HTMLElement {
       case 'state': {
         const newState = JSON.parse(newValue);
 
-        if (!this._state.route || newState.route.id !== this._state.route.id) {
-          switch (newState.route.id) {
+        const oldRoute = this._state.routes && this._state.routes.find(route => route.current);
+        const newRoute = newState.routes.find(route => route.current);
+
+        if (!oldRoute || oldRoute.id !== newRoute.id) {
+          switch (newRoute.id) {
             case 'home': {
               const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
               main.innerHTML = templateHome({
@@ -67,9 +70,9 @@ class KleeneRouter extends HTMLElement {
             default:
               break;
           }
-        } else if (newState.route.id === 'timers') {
+        } else if (newRoute.id === 'timers') {
           const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
-          const timers = main.querySelector('kleene-timers');
+          const timers = main.querySelector('chrono-timers');
 
           timers.setAttribute('state', JSON.stringify(newState.timers));
         }
@@ -83,4 +86,4 @@ class KleeneRouter extends HTMLElement {
   }
 }
 
-window.customElements.define('kleene-router', KleeneRouter);
+window.customElements.define('chrono-router', ChronoRouter);

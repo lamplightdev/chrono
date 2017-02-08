@@ -10,7 +10,7 @@ class StateClient extends State {
       history.pushState(route, route.title, route.path);
     }
 
-    document.title = `Kleene - ${route.title}`;
+    document.title = `Chrono - ${route.title}`;
   }
 }
 

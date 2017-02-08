@@ -5,11 +5,11 @@ const template = (args = {}) => {
 
   return `
     <h1>Timers</h1>
-    <kleene-timeradd></kleene-timeradd>
+    <chrono-timeradd></chrono-timeradd>
 
-    <kleene-timers state='${JSON.stringify(state.timers)}'>
+    <chrono-timers state='${JSON.stringify(state.timers)}'>
       ${templateTimers(state.timers)}
-    </kleene-timers>
+    </chrono-timers>
   `;
 };
 

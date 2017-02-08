@@ -1,6 +1,6 @@
 const StateClient = require('../../models/state-client');
 
-class KleeneState extends HTMLElement {
+class ChronoState extends HTMLElement {
   constructor() {
     super();
 
@@ -15,10 +15,6 @@ class KleeneState extends HTMLElement {
 
   connectedCallback() {
     this.addEventListener('route:change', (event) => {
-      if (event.detail.event) {
-        event.detail.event.preventDefault();
-      }
-
       this.onStateChange('route:change', Object.assign({}, event.detail.data, {
         replace: event.detail.replace,
       }));
@@ -92,8 +88,11 @@ class KleeneState extends HTMLElement {
         this._state = StateClient.fromObject(JSON.parse(newValue));
 
         const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
-        const router = main.querySelector('kleene-router');
 
+        const nav = main.querySelector('chrono-nav');
+        nav.setAttribute('state', JSON.stringify(this._state.toObject().routes));
+
+        const router = main.querySelector('chrono-router');
         router.setAttribute('state', JSON.stringify(this._state.toObject()));
 
         console.log('state', this._state);
@@ -105,4 +104,4 @@ class KleeneState extends HTMLElement {
   }
 }
 
-window.customElements.define('kleene-state', KleeneState);
+window.customElements.define('chrono-state', ChronoState);
