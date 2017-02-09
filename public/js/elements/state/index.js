@@ -39,6 +39,10 @@ class ChronoState extends HTMLElement {
     this.addEventListener('state:timersplit', (event) => {
       this.onStateChange('state:timersplit', event.detail);
     });
+
+    this.addEventListener('state:timerremove', (event) => {
+      this.onStateChange('state:timerremove', event.detail);
+    });
   }
 
   disconnectedCallback() {
@@ -69,6 +73,10 @@ class ChronoState extends HTMLElement {
       }
       case 'state:timersplit': {
         this._state.splitTimer(data);
+        break;
+      }
+      case 'state:timerremove': {
+        this._state.removeTimer(data);
         break;
       }
       default:

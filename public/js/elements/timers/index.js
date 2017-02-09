@@ -57,7 +57,7 @@ class ChronoTimers extends HTMLElement {
 
           this._state.forEach((existingTimer) => {
             if (!newState.some(newTimer => newTimer.start === existingTimer.start)) {
-              this.deleteTimer(existingTimer);
+              this.removeTimer(existingTimer);
             }
           });
 
@@ -86,7 +86,7 @@ class ChronoTimers extends HTMLElement {
     component.setAttribute('state', JSON.stringify(timer));
   }
 
-  deleteTimer(timer) {
+  removeTimer(timer) {
     const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
     component.remove();
   }

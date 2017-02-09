@@ -28,6 +28,7 @@ class ChronoTimer extends HTMLElement {
     this.end = this.end.bind(this);
     this.pause = this.pause.bind(this);
     this.split = this.split.bind(this);
+    this.removeTimer = this.removeTimer.bind(this);
     this.increment = this.increment.bind(this);
   }
 
@@ -70,6 +71,10 @@ class ChronoTimer extends HTMLElement {
     formSplit.addEventListener('submit', this.split);
     formSplit.addEventListener('chrono:buttonclick', this.split);
 
+    const formRemove = root.querySelector('form#remove');
+    formRemove.addEventListener('submit', this.removeTimer);
+    formRemove.addEventListener('chrono:buttonclick', this.removeTimer);
+
     this.animation = window.requestAnimationFrame(this.increment);
   }
 
@@ -87,6 +92,10 @@ class ChronoTimer extends HTMLElement {
     const formSplit = root.querySelector('form#split');
     formSplit.removeEventListener('submit', this.split);
     formSplit.removeEventListener('chrono:buttonclick', this.split);
+
+    const formRemove = root.querySelector('form#remove');
+    formRemove.removeEventListener('submit', this.removeTimer);
+    formRemove.removeEventListener('chrono:buttonclick', this.removeTimer);
 
     window.cancelAnimationFrame(this.animation);
   }
@@ -169,6 +178,18 @@ class ChronoTimer extends HTMLElement {
       detail: {
         id: this.state.id,
         time: Date.now(),
+      },
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  removeTimer(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('state:timerremove', {
+      detail: {
+        id: this.state.id,
       },
       bubbles: true,
       composed: true,

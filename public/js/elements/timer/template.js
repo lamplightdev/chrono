@@ -19,5 +19,8 @@ module.exports = (timer = {
     <form id='split'>
       <chrono-button>Split</chrono-button>
     </form>
+    <form id='remove'>
+      <chrono-button>Remove</chrono-button>
+    </form>
   </div>
 `);

@@ -73,6 +73,11 @@ class State {
     const foundTimer = this.timers.find(timer => timer.id === data.id);
     foundTimer.splits.push(data.time - foundTimer.start);
   }
+
+  removeTimer(data) {
+    const foundTimerIndex = this.timers.findIndex(timer => timer.id === data.id);
+    this.timers.splice(foundTimerIndex, 1);
+  }
 }
 
 module.exports = State;
