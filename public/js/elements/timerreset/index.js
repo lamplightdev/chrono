@@ -1,6 +1,6 @@
 const template = require('./template');
 
-class ChronoTimerAdd extends HTMLElement {
+class ChronoTimerReset extends HTMLElement {
   constructor() {
     super();
 
@@ -27,32 +27,31 @@ class ChronoTimerAdd extends HTMLElement {
 
     this._state = {};
 
-    this.onAdd = this.onAdd.bind(this);
+    this.onReset = this.onReset.bind(this);
   }
 
   connectedCallback() {
     const root = this.shadowRoot;
 
-    root.querySelector('form').addEventListener('submit', this.onAdd);
-    root.querySelector('form').addEventListener('chrono:buttonclick', this.onAdd);
+    root.querySelector('form').addEventListener('submit', this.onReset);
+    root.querySelector('form').addEventListener('chrono:buttonclick', this.onReset);
   }
 
   disconnectedCallback() {
     const root = this.shadowRoot;
 
-    root.querySelector('form').removeEventListener('submit', this.onAdd);
-    root.querySelector('form').removeEventListener('chrono:buttonclick', this.onAdd);
+    root.querySelector('form').removeEventListener('submit', this.onReset);
+    root.querySelector('form').removeEventListener('chrono:buttonclick', this.onReset);
   }
 
-  onAdd(event) {
+  onReset(event) {
     event.preventDefault();
 
-    this.dispatchEvent(new CustomEvent('state:timeradd', {
-      detail: Date.now(),
+    this.dispatchEvent(new CustomEvent('state:timerreset', {
       bubbles: true,
       composed: true,
     }));
   }
 }
 
-window.customElements.define('chrono-timeradd', ChronoTimerAdd);
+window.customElements.define('chrono-timerreset', ChronoTimerReset);

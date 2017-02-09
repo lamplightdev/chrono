@@ -11,13 +11,13 @@ module.exports = (timer = {
       ${timer.splits.map((split, splitIndex) => `<chrono-timersplit id='split-${splitIndex}' state='${JSON.stringify(split)}'></chrono-timersplit>`)}
     </div>
     <form id='pause'>
-      <button>Pause</button>
+      <chrono-button>Pause</chrono-button>
     </form>
     <form id='end'>
-      <button>End</button>
+      <chrono-button>End</chrono-button>
     </form>
     <form id='split'>
-      <button>Split</button>
+      <chrono-button>Split</chrono-button>
     </form>
   </div>
 `);

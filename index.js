@@ -6,7 +6,6 @@ const StateServer = require('./public/js/models/state-server');
 
 const layoutPage = require('./public/js/layout/page');
 const templateHome = require('./public/js/templates/home');
-const templateAbout = require('./public/js/templates/about');
 const templateTimers = require('./public/js/templates/timers');
 
 const app = express();
@@ -24,10 +23,6 @@ const state = new StateServer({
     title: 'Home',
     path: '/',
     current: true,
-  }, {
-    id: 'about',
-    title: 'About',
-    path: '/about',
   }, {
     id: 'timers',
     title: 'Timers',
@@ -47,25 +42,6 @@ app.get('/', (req, res) => {
   const page = layoutPage({
     state,
     title: 'Chrono - Home',
-    content,
-  });
-
-  res.send(page);
-});
-
-app.get('/about', (req, res) => {
-  state.changeRoute({
-    id: 'about',
-  });
-
-  const content = templateAbout({
-    state: state.toObject(),
-    who: 'Mr NO JS',
-  });
-
-  const page = layoutPage({
-    state,
-    title: 'Chrono - About',
     content,
   });
 

@@ -1,3 +1,4 @@
+const style = require('./style.css');
 const template = require('./template');
 
 class ChronoTimer extends HTMLElement {
@@ -8,12 +9,7 @@ class ChronoTimer extends HTMLElement {
 
     shadowRoot.innerHTML = `
       <style>
-        :host {
-        }
-
-        * {
-          box-sizing: border-box;
-        }
+        ${style()}
       </style>
 
       <template>
@@ -61,24 +57,36 @@ class ChronoTimer extends HTMLElement {
 
   connectedCallback() {
     const root = this.shadowRoot;
+
     const formEnd = root.querySelector('form#end');
     formEnd.addEventListener('submit', this.end);
+    formEnd.addEventListener('chrono:buttonclick', this.end);
+
     const formPause = root.querySelector('form#pause');
     formPause.addEventListener('submit', this.pause);
+    formPause.addEventListener('chrono:buttonclick', this.pause);
+
     const formSplit = root.querySelector('form#split');
     formSplit.addEventListener('submit', this.split);
+    formSplit.addEventListener('chrono:buttonclick', this.split);
 
     this.animation = window.requestAnimationFrame(this.increment);
   }
 
   disconnectedCallback() {
     const root = this.shadowRoot;
+
     const formEnd = root.querySelector('form#end');
     formEnd.removeEventListener('submit', this.end);
+    formEnd.removeEventListener('chrono:buttonclick', this.end);
+
     const formPause = root.querySelector('form#pause');
     formPause.removeEventListener('submit', this.pause);
+    formPause.removeEventListener('chrono:buttonclick', this.pause);
+
     const formSplit = root.querySelector('form#split');
     formSplit.removeEventListener('submit', this.split);
+    formSplit.removeEventListener('chrono:buttonclick', this.split);
 
     window.cancelAnimationFrame(this.animation);
   }

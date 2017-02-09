@@ -1,0 +1,16 @@
+module.exports = () => (`
+
+:host {
+
+}
+
+
+#no-timers {
+  display: none;
+}
+
+#no-timers.show {
+  display: block;
+}
+
+`);

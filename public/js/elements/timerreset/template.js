@@ -1,7 +1,7 @@
 module.exports = () => (`
   <div class='chrono-addtimer'>
     <form>
-      <chrono-button>Add</chrono-button>
+      <chrono-button>Reset</chrono-button>
     </form>
   </div>
 `);
