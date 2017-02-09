@@ -59,6 +59,11 @@ class ChronoTimer extends HTMLElement {
   connectedCallback() {
     const root = this.shadowRoot;
 
+    if (this.hasAttribute('hidesplits')) {
+      this.shadowRoot.querySelector('#splits').classList.add('hide');
+      this.shadowRoot.querySelector('#split').classList.add('hide');
+    }
+
     const formEnd = root.querySelector('form#end');
     formEnd.addEventListener('submit', this.end);
     formEnd.addEventListener('chrono:buttonclick', this.end);
@@ -119,25 +124,26 @@ class ChronoTimer extends HTMLElement {
     if (elapsed.length < 4) {
       elapsed = `0${elapsed}`;
     }
-    if (elapsed.length < 5) {
-      elapsed = `0${elapsed}`;
-    }
 
     elapsed = `${elapsed.substring(0, 2)}:${elapsed.substring(2)}`;
     root.querySelector('#elapsed').textContent = elapsed;
 
-    const splitsContainer = root.querySelector('#splits');
-    timer.splits.forEach((split, splitIndex) => {
-      const splitComponent = splitsContainer.querySelector(`#split-${splitIndex}`);
-      if (splitComponent) {
-        splitComponent.setAttribute('state', JSON.stringify(split));
-      } else {
-        const chronoTimerSplit = document.createElement('chrono-timersplit');
-        chronoTimerSplit.setAttribute('state', JSON.stringify(split));
-        chronoTimerSplit.setAttribute('id', `split-${splitIndex}`);
-        splitsContainer.appendChild(chronoTimerSplit);
-      }
-    });
+
+    if (!this.hasAttribute('hidesplits')) {
+      const splitsContainer = root.querySelector('#splits');
+
+      timer.splits.forEach((split, splitIndex) => {
+        const splitComponent = splitsContainer.querySelector(`#split-${splitIndex}`);
+        if (splitComponent) {
+          splitComponent.setAttribute('state', JSON.stringify(split));
+        } else {
+          const chronoTimerSplit = document.createElement('chrono-timersplit');
+          chronoTimerSplit.setAttribute('state', JSON.stringify(split));
+          chronoTimerSplit.setAttribute('id', `split-${splitIndex}`);
+          splitsContainer.appendChild(chronoTimerSplit);
+        }
+      });
+    }
 
     this.setAttribute('stateid', timer.id);
   }

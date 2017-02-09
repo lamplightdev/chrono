@@ -70,6 +70,7 @@ class ChronoTimers extends HTMLElement {
   }
 
   connectedCallback() {
+    this.hideSplits = this.hasAttribute('hidesplits');
   }
 
   disconnectedCallback() {
@@ -78,6 +79,9 @@ class ChronoTimers extends HTMLElement {
   addTimer(timer) {
     const chronoTimer = document.createElement('chrono-timer');
     chronoTimer.setAttribute('state', JSON.stringify(timer));
+    if (this.hideSplits) {
+      chronoTimer.setAttribute('hidesplits', '');
+    }
     this.shadowRoot.querySelector('#timers').appendChild(chronoTimer);
   }
 

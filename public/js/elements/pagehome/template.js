@@ -5,7 +5,7 @@ const template = (timers = []) => {
   return `
     <chrono-timeradd></chrono-timeradd>
 
-    <chrono-timers state='${JSON.stringify(timers)}'>
+    <chrono-timers hidesplits state='${JSON.stringify(timers)}'>
       ${templateTimers(timers)}
     </chrono-timers>
 

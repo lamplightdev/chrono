@@ -8,4 +8,12 @@ h1 {
   text-align: center;
 }
 
+chrono-timersplit {
+  text-align: center;
+}
+
+#split.hide, #splits.hide {
+  display: none;
+}
+
 `);
