@@ -57,9 +57,7 @@ class ChronoTimerSplit extends HTMLElement {
   }
 
   update(split) {
-    const root = this.shadowRoot;
-
-    const container = root.querySelector('.chrono-timersplit');
+    const container = this.shadowRoot.querySelector('.chrono-timersplit');
 
     container.textContent = split / 1000;
   }

@@ -5,17 +5,9 @@ class ChronoTimer extends HTMLElement {
   constructor() {
     super();
 
-    const shadowRoot = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
 
-    shadowRoot.innerHTML = `
-      <style>
-        ${style()}
-      </style>
-
-      <template>
-        ${template()}
-      </template>
-    `;
+    this.initShadowRoot();
 
     const templateContent = this.shadowRoot.querySelector('template');
     const instance = templateContent.content.cloneNode(true);
@@ -27,9 +19,20 @@ class ChronoTimer extends HTMLElement {
 
     this.end = this.end.bind(this);
     this.pause = this.pause.bind(this);
-    this.split = this.split.bind(this);
     this.removeTimer = this.removeTimer.bind(this);
     this.increment = this.increment.bind(this);
+  }
+
+  initShadowRoot() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        ${style()}
+      </style>
+
+      <template>
+        ${template()}
+      </template>
+    `;
   }
 
   static get observedAttributes() {
@@ -57,26 +60,15 @@ class ChronoTimer extends HTMLElement {
   }
 
   connectedCallback() {
-    const root = this.shadowRoot;
-
-    if (this.hasAttribute('hidesplits')) {
-      this.shadowRoot.querySelector('#splits').classList.add('hide');
-      this.shadowRoot.querySelector('#split').classList.add('hide');
-    }
-
-    const formEnd = root.querySelector('form#end');
+    const formEnd = this.shadowRoot.querySelector('form#end');
     formEnd.addEventListener('submit', this.end);
     formEnd.addEventListener('chrono:buttonclick', this.end);
 
-    const formPause = root.querySelector('form#pause');
+    const formPause = this.shadowRoot.querySelector('form#pause');
     formPause.addEventListener('submit', this.pause);
     formPause.addEventListener('chrono:buttonclick', this.pause);
 
-    const formSplit = root.querySelector('form#split');
-    formSplit.addEventListener('submit', this.split);
-    formSplit.addEventListener('chrono:buttonclick', this.split);
-
-    const formRemove = root.querySelector('form#remove');
+    const formRemove = this.shadowRoot.querySelector('form#remove');
     formRemove.addEventListener('submit', this.removeTimer);
     formRemove.addEventListener('chrono:buttonclick', this.removeTimer);
 
@@ -84,21 +76,15 @@ class ChronoTimer extends HTMLElement {
   }
 
   disconnectedCallback() {
-    const root = this.shadowRoot;
-
-    const formEnd = root.querySelector('form#end');
+    const formEnd = this.shadowRoot.querySelector('form#end');
     formEnd.removeEventListener('submit', this.end);
     formEnd.removeEventListener('chrono:buttonclick', this.end);
 
-    const formPause = root.querySelector('form#pause');
+    const formPause = this.shadowRoot.querySelector('form#pause');
     formPause.removeEventListener('submit', this.pause);
     formPause.removeEventListener('chrono:buttonclick', this.pause);
 
-    const formSplit = root.querySelector('form#split');
-    formSplit.removeEventListener('submit', this.split);
-    formSplit.removeEventListener('chrono:buttonclick', this.split);
-
-    const formRemove = root.querySelector('form#remove');
+    const formRemove = this.shadowRoot.querySelector('form#remove');
     formRemove.removeEventListener('submit', this.removeTimer);
     formRemove.removeEventListener('chrono:buttonclick', this.removeTimer);
 
@@ -106,11 +92,9 @@ class ChronoTimer extends HTMLElement {
   }
 
   update(timer) {
-    const root = this.shadowRoot;
-
-    root.querySelector('#id').textContent = timer.id;
-    root.querySelector('#start').textContent = timer.start;
-    root.querySelector('#end').textContent = timer.end;
+    this.shadowRoot.querySelector('#id').textContent = timer.id;
+    this.shadowRoot.querySelector('#start').textContent = timer.start;
+    this.shadowRoot.querySelector('#end').textContent = timer.end;
 
     let elapsed = timer.end ? (timer.end - timer.start) : (Date.now() - timer.start);
     elapsed = Math.floor(elapsed / (1000 / this._resolution));
@@ -126,24 +110,7 @@ class ChronoTimer extends HTMLElement {
     }
 
     elapsed = `${elapsed.substring(0, 2)}:${elapsed.substring(2)}`;
-    root.querySelector('#elapsed').textContent = elapsed;
-
-
-    if (!this.hasAttribute('hidesplits')) {
-      const splitsContainer = root.querySelector('#splits');
-
-      timer.splits.forEach((split, splitIndex) => {
-        const splitComponent = splitsContainer.querySelector(`#split-${splitIndex}`);
-        if (splitComponent) {
-          splitComponent.setAttribute('state', JSON.stringify(split));
-        } else {
-          const chronoTimerSplit = document.createElement('chrono-timersplit');
-          chronoTimerSplit.setAttribute('state', JSON.stringify(split));
-          chronoTimerSplit.setAttribute('id', `split-${splitIndex}`);
-          splitsContainer.appendChild(chronoTimerSplit);
-        }
-      });
-    }
+    this.shadowRoot.querySelector('#elapsed').textContent = elapsed;
 
     this.setAttribute('stateid', timer.id);
   }
@@ -177,19 +144,6 @@ class ChronoTimer extends HTMLElement {
     }
   }
 
-  split(event) {
-    event.preventDefault();
-
-    this.dispatchEvent(new CustomEvent('state:timersplit', {
-      detail: {
-        id: this.state.id,
-        time: Date.now(),
-      },
-      bubbles: true,
-      composed: true,
-    }));
-  }
-
   removeTimer(event) {
     event.preventDefault();
 
@@ -217,3 +171,5 @@ class ChronoTimer extends HTMLElement {
 }
 
 window.customElements.define('chrono-timer', ChronoTimer);
+
+module.exports = ChronoTimer;

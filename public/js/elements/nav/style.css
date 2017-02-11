@@ -3,11 +3,11 @@ module.exports = () => (`
 :host {
   display: block;
   position: relative;
+  text-transform: uppercase;
+  background-color: red;
 }
 
 nav {
-  background-color: red;
-
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,10 +20,10 @@ nav {
   bottom: 0;
   height: 5px;
   width: 0;
-  background-color: blue;
+  background-color: #E91E63;
 
   transform: translate(0px);
-  transition: transform 0.1s ease-in 0s;
+  transition: transform 0.05s ease-in 0s;
 
   display: none;
 }
@@ -45,7 +45,7 @@ a {
 }
 
 a.current {
-  border-bottom-color: blue;
+  border-bottom-color: #E91E63;
 }
 
 a.hide {

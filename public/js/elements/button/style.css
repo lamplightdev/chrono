@@ -5,13 +5,33 @@ module.exports = () => (`
 }
 
 button {
-  width: 60px;
-  height: 60px;
-  border-radius: 60px;
-
-  color: white;
-  background-color: blue;
   border: none;
+  background: #E91E63;
+  box-shadow: 0 0 2px 0 rgba(0,0,0,0.12), 0 2px 2px 0 rgba(0,0,0,0.24);
+  border-radius: 2px;
+  font-family: Roboto;
+  font-size: 16px;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+  padding: 6px 12px;
+  text-transform: uppercase;
+}
+
+button:active {
+  box-shadow: 0 0 8px 0 rgba(0,0,0,0.12), 0 8px 8px 0 rgba(0,0,0,0.24);
+}
+
+button.small {
+  font-size: 12px;
+}
+
+button.circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 80px;
+
+  font-family: Roboto-Light;
+  font-size: 36px;
 }
 
 `);

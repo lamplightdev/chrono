@@ -7,6 +7,7 @@ class ChronoButton extends HTMLElement {
 
     const shadowRoot = this.attachShadow({ mode: 'open' });
 
+
     shadowRoot.innerHTML = `
       <style>
         ${style()}
@@ -22,12 +23,23 @@ class ChronoButton extends HTMLElement {
     this.shadowRoot.appendChild(instance);
 
     this.onClick = this.onClick.bind(this);
-
-    this.addEventListener('click', this.onClick);
   }
 
-  // Material design ripple animation.
+  connectedCallback() {
+    this.addEventListener('click', this.onClick);
+
+    if (this.hasAttribute('iscircle')) {
+      this.shadowRoot.querySelector('button').classList.add('circle');
+    }
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('click', this.onClick);
+  }
+
   onClick(event) {
+    event.preventDefault();
+
     if (this.parentElement.tagName === 'FORM') {
       this.dispatchEvent(new CustomEvent('chrono:buttonclick', {
         bubbles: true,

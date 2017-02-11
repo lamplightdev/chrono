@@ -31,17 +31,13 @@ class ChronoTimerAdd extends HTMLElement {
   }
 
   connectedCallback() {
-    const root = this.shadowRoot;
-
-    root.querySelector('form').addEventListener('submit', this.onAdd);
-    root.querySelector('form').addEventListener('chrono:buttonclick', this.onAdd);
+    this.shadowRoot.querySelector('form').addEventListener('submit', this.onAdd);
+    this.shadowRoot.querySelector('form').addEventListener('chrono:buttonclick', this.onAdd);
   }
 
   disconnectedCallback() {
-    const root = this.shadowRoot;
-
-    root.querySelector('form').removeEventListener('submit', this.onAdd);
-    root.querySelector('form').removeEventListener('chrono:buttonclick', this.onAdd);
+    this.shadowRoot.querySelector('form').removeEventListener('submit', this.onAdd);
+    this.shadowRoot.querySelector('form').removeEventListener('chrono:buttonclick', this.onAdd);
   }
 
   onAdd(event) {

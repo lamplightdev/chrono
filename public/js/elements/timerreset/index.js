@@ -31,17 +31,13 @@ class ChronoTimerReset extends HTMLElement {
   }
 
   connectedCallback() {
-    const root = this.shadowRoot;
-
-    root.querySelector('form').addEventListener('submit', this.onReset);
-    root.querySelector('form').addEventListener('chrono:buttonclick', this.onReset);
+    this.shadowRoot.querySelector('form').addEventListener('submit', this.onReset);
+    this.shadowRoot.querySelector('form').addEventListener('chrono:buttonclick', this.onReset);
   }
 
   disconnectedCallback() {
-    const root = this.shadowRoot;
-
-    root.querySelector('form').removeEventListener('submit', this.onReset);
-    root.querySelector('form').removeEventListener('chrono:buttonclick', this.onReset);
+    this.shadowRoot.querySelector('form').removeEventListener('submit', this.onReset);
+    this.shadowRoot.querySelector('form').removeEventListener('chrono:buttonclick', this.onReset);
   }
 
   onReset(event) {

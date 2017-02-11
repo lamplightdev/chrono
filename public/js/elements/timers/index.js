@@ -23,6 +23,8 @@ class ChronoTimers extends HTMLElement {
 
     this._state = [];
     this._stateString = JSON.stringify(this._state);
+
+    this._timerComponent = 'chrono-timer';
   }
 
   static get observedAttributes() {
@@ -70,28 +72,29 @@ class ChronoTimers extends HTMLElement {
   }
 
   connectedCallback() {
-    this.hideSplits = this.hasAttribute('hidesplits');
+    if (this.hasAttribute('isfull')) {
+      this._timerComponent = 'chrono-timerfull';
+    } else {
+      this._timerComponent = 'chrono-timer';
+    }
   }
 
   disconnectedCallback() {
   }
 
   addTimer(timer) {
-    const chronoTimer = document.createElement('chrono-timer');
+    const chronoTimer = document.createElement(this._timerComponent);
     chronoTimer.setAttribute('state', JSON.stringify(timer));
-    if (this.hideSplits) {
-      chronoTimer.setAttribute('hidesplits', '');
-    }
     this.shadowRoot.querySelector('#timers').appendChild(chronoTimer);
   }
 
   editTimer(timer) {
-    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`${this._timerComponent}[stateid='${timer.id}']`);
     component.setAttribute('state', JSON.stringify(timer));
   }
 
   removeTimer(timer) {
-    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`${this._timerComponent}[stateid='${timer.id}']`);
     component.remove();
   }
 }

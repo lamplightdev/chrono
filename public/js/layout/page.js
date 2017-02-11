@@ -28,11 +28,13 @@ const layoutPage = (args) => {
         <chrono-nav state='${JSON.stringify(state.routes)}'>
           ${templateNav(state.routes)}
         </chrono-nav>
-        <chrono-router>
-          <div slot='main'>
-            <main>${args.content}</main>
-          </div>
-        </chrono-router>
+        <main>
+          <chrono-router>
+            <div slot='main'>
+              ${args.content}
+            </div>
+          </chrono-router>
+        </main>
       </div>
     </chrono-state>
 
