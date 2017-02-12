@@ -22,6 +22,23 @@ class ChronoTimerFull extends ChronoTimer {
     `;
   }
 
+  static get observedAttributes() {
+    return super.observedAttributes.concat(['minimiseToSelector']);
+  }
+
+  /*
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (name) {
+      case 'state':
+        this.update(JSON.parse(newValue));
+        break;
+      default:
+        break;
+    }
+  }
+  */
+
   connectedCallback() {
     super.connectedCallback();
 

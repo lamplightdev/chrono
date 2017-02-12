@@ -1,25 +1,28 @@
 const style = require('./style.css');
-const template = require('./template');
+const templateHasTimer = require('./template-hastimer');
+const templateHasNoTimer = require('./template-hasnotimer');
 
 class ChronoPageHome extends HTMLElement {
   constructor() {
     super();
 
-    const shadowRoot = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
 
-    shadowRoot.innerHTML = `
+    this.shadowRoot.innerHTML = `
       <style>
         ${style()}
       </style>
 
-      <template>
-        ${template()}
+      <template id='hastimer'>
+        ${templateHasTimer()}
       </template>
-    `;
 
-    const templateContent = this.shadowRoot.querySelector('template');
-    const instance = templateContent.content.cloneNode(true);
-    this.shadowRoot.appendChild(instance);
+      <template id='hasnotimer'>
+        ${templateHasNoTimer()}
+      </template>
+
+      <div id='content'></div>
+    `;
   }
 
   connectedCallback() {
@@ -44,27 +47,52 @@ class ChronoPageHome extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
-      case 'state':
-        this.update(JSON.parse(newValue));
+      case 'state': {
+        const oldState = oldValue ? JSON.parse(oldValue) : {};
+        const newState = newValue ? JSON.parse(newValue) : {};
+        if (!oldValue) {
+          if (newState.timers.length) {
+            this.initComponent(newState.timers[newState.timers.length - 1]);
+          } else {
+            this.initComponent();
+          }
+        } else {
+          if (newState.timers.length && oldState.timers.length) {
+            this.updateTimer(newState.timers[newState.timers.length - 1]);
+          } else if (newState.timers.length && !oldState.timers.length) {
+            this.initComponent(newState.timers[newState.timers.length - 1]);
+          } else if (!newState.timers.length && oldState.timers.length) {
+            this.initComponent();
+          }
+        }
         break;
+      }
       default:
         break;
     }
   }
 
-  update(state) {
-    const timers = state.timers.length ? [state.timers[state.timers.length - 1]] : [];
+  initComponent(timer = false) {
+    const templateId = timer ? 'hastimer' : 'hasnotimer';
+    const templateContent = this.shadowRoot.querySelector(`template#${templateId}`);
+    const instance = templateContent.content.cloneNode(true);
 
-    const timersElement = this.shadowRoot.querySelector('chrono-timers');
-    const notimersElement = this.shadowRoot.getElementById('no-timers');
+    const content = this.shadowRoot.querySelector('#content');
 
-    timersElement.setAttribute('state', JSON.stringify(timers));
-
-    if (!state.timers.length) {
-      notimersElement.classList.add('show');
-    } else {
-      notimersElement.classList.remove('show');
+    while (content.hasChildNodes()) {
+      content.removeChild(content.lastChild);
     }
+
+    content.appendChild(instance);
+
+    if (timer) {
+      this.updateTimer(timer);
+    }
+  }
+
+  updateTimer(timer) {
+    const timerElement = this.shadowRoot.querySelector('chrono-timerfull');
+    timerElement.setAttribute('state', JSON.stringify(timer));
   }
 }
 

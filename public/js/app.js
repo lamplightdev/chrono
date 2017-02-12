@@ -5,7 +5,6 @@ require('./elements/pagetimers');
 require('./elements/button');
 require('./elements/nav');
 require('./elements/timeradd');
-require('./elements/timerreset');
 require('./elements/timer');
 require('./elements/timerfull');
 require('./elements/timersplit');

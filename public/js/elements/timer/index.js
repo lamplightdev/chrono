@@ -42,7 +42,12 @@ class ChronoTimer extends HTMLElement {
   get state() {
     const jsonString = this.getAttribute('state');
 
-    return jsonString ? JSON.parse(jsonString) : {};
+    return jsonString ? JSON.parse(jsonString) : {
+      id: false,
+      start: false,
+      end: false,
+      splits: [],
+    };
   }
 
   set state(state) {
@@ -92,10 +97,6 @@ class ChronoTimer extends HTMLElement {
   }
 
   update(timer) {
-    this.shadowRoot.querySelector('#id').textContent = timer.id;
-    this.shadowRoot.querySelector('#start').textContent = timer.start;
-    this.shadowRoot.querySelector('#end').textContent = timer.end;
-
     let elapsed = timer.end ? (timer.end - timer.start) : (Date.now() - timer.start);
     elapsed = Math.floor(elapsed / (1000 / this._resolution));
     elapsed = elapsed.toString();

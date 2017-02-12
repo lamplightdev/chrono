@@ -35,6 +35,9 @@ const layoutPage = (args) => {
             </div>
           </chrono-router>
         </main>
+        <div class='actions'>
+          <chrono-timeradd></chrono-timeradd>
+        </div>
       </div>
     </chrono-state>
 

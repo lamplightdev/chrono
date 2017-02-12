@@ -3,7 +3,7 @@
 }
 
 body {
-  font-family: Roboto, Arial, sans-serif;
+  font-family: Roboto-Light, Arial, sans-serif;
   font-size: 16px;
   text-align: center;
 
@@ -13,10 +13,21 @@ body {
   margin: 0;
 }
 
+h1, h2, h3 {
+  font-weight: normal;
+}
+
 main {
   padding: 16px;
 }
 
 chrono-nav {
   background-color: #0D47A1;
+}
+
+.actions {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  left: 1rem;
 }
