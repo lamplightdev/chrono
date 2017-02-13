@@ -5,7 +5,7 @@ module.exports = (timer = {
   paused: false,
   splits: [],
 }) => (`
-  <div id='elapsed'>${timer.end ? (timer.end - timer.start) : (Date.now() - timer.start)}</div>
+  <div id='elapsed' class='time'>${timer.end ? (timer.end - timer.start) : (Date.now() - timer.start)}</div>
   <div id='actions'>
     <form id='pause'>
       <chrono-button>Pause</chrono-button>

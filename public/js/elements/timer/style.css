@@ -16,7 +16,7 @@ chrono-timersplit {
   text-align: center;
 }
 
-#elapsed {
+.time {
   flex-grow: 1;
 }
 

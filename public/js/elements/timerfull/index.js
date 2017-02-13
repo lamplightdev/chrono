@@ -22,23 +22,6 @@ class ChronoTimerFull extends ChronoTimer {
     `;
   }
 
-  static get observedAttributes() {
-    return super.observedAttributes.concat(['minimiseToSelector']);
-  }
-
-  /*
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    switch (name) {
-      case 'state':
-        this.update(JSON.parse(newValue));
-        break;
-      default:
-        break;
-    }
-  }
-  */
-
   connectedCallback() {
     super.connectedCallback();
 
@@ -53,6 +36,50 @@ class ChronoTimerFull extends ChronoTimer {
     const formSplit = this.shadowRoot.querySelector('form#split');
     formSplit.removeEventListener('submit', this.split);
     formSplit.removeEventListener('chrono:buttonclick', this.split);
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    const oldState = oldValue ? JSON.parse(oldValue) : [];
+    const newState = newValue ? JSON.parse(newValue) : [];
+
+    if (oldValue && newState.id > oldState.id && this.getAttribute('minimiseToSelector')) {
+      window.requestAnimationFrame(() => {
+        const fromElement = this.shadowRoot.querySelectorAll('.time')[0];
+        const fromElementRect = fromElement.getBoundingClientRect();
+
+        const toElement = document.querySelector('chrono-nav').shadowRoot.querySelector('nav a:last-child');
+        const toElementRect = toElement.getBoundingClientRect();
+
+        const element = fromElement.cloneNode();
+        element.removeAttribute('id');
+        element.textContent = oldState.end ?
+          (oldState.end - oldState.start) :
+          (Date.now() - oldState.start);
+
+        element.classList.add('dyn');
+
+        element.style.left = `${fromElementRect.left}px`;
+        element.style.right = `${fromElementRect.right - fromElementRect.width}px`;
+        element.style.top = `${fromElementRect.top - fromElement.offsetTop}px`;
+
+        this.shadowRoot.appendChild(element);
+
+        element.addEventListener('transitionend', () => {
+          element.remove();
+        });
+
+        window.requestAnimationFrame(() => {
+          element.classList.add('show');
+
+          const scale = toElementRect.height / fromElementRect.height;
+          element.style.transform = `translate(
+            ${(toElementRect.left - fromElementRect.left) / 2}px,
+            ${(-fromElementRect.top) * (0.5 / scale)}px
+          ) scale(${scale})`;
+        });
+      });
+    }
+    super.attributeChangedCallback(name, oldValue, newValue);
   }
 
   update(timer) {

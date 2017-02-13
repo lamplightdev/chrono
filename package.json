@@ -27,5 +27,22 @@
   "bugs": {
     "url": "https://github.com/lamplightdev/chrono/issues"
   },
-  "homepage": "https://github.com/lamplightdev/chrono#readme"
+  "homepage": "https://github.com/lamplightdev/chrono#readme",
+  "eslintConfig": {
+    "extends": "airbnb-base",
+    "globals": {
+      "HTMLElement": false,
+      "window": false,
+      "document": false,
+      "fetch": false,
+      "CustomEvent": false,
+      "Headers": false,
+      "history": false
+    },
+    "rules": {
+      "no-underscore-dangle": [
+        0
+      ]
+    }
+  }
 }

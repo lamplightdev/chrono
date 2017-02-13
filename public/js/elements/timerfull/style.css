@@ -1,16 +1,38 @@
 module.exports = () => (`
 
 :host {
+}
 
+.container {
+  position: relative;
 }
 
 h1 {
   font-weight: normal;
   font-size: 5rem;
+  margin: 0;
+  padding: 2rem;
 }
 
 chrono-timersplit {
   text-align: center;
+}
+
+#elapsed {
+  z-index: 2;
+}
+
+.dyn {
+  position: absolute;
+  opacity: 1;
+  visibility: hidden;
+  z-index: 1;
+}
+
+.dyn.show {
+  opacity: 0;
+  visibility: visible;
+  transition: transform 0.2s ease-out 0s, opacity 0.2s ease-out 0s;
 }
 
 `);

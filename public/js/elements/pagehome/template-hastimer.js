@@ -7,9 +7,9 @@ const template = (timer = false) => {
         ${templateTimerFull(timer)}
       </chrono-timerfull>
     `;
-  } else {
-    return '<chrono-timerfull></chrono-timerfull>';
   }
+
+  return '<chrono-timerfull minimiseToSelector="#item"></chrono-timerfull>';
 };
 
 module.exports = template;
