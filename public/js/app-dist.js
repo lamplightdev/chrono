@@ -80,19 +80,13 @@ module.exports = (timer = {
   <div class='container'>
     <h1 id='elapsed' class='time'>${timer.end ? (timer.end - timer.start) : (Date.now() - timer.start)}</h1>
     <div id='splits'>
-      ${timer.splits.map((split, splitIndex) => `<chrono-timersplit id='split-${splitIndex}' state='${JSON.stringify(split)}'></chrono-timersplit>`)}
+      ${[...timer.splits].reverse().map((split, splitIndex) => `<chrono-timersplit id='split-${splitIndex}' state='${JSON.stringify(split)}'></chrono-timersplit>`)}
     </div>
     <form id='pause'>
       <chrono-button>Pause</chrono-button>
     </form>
-    <form id='end'>
-      <chrono-button>End</chrono-button>
-    </form>
     <form id='split'>
       <chrono-button>Split</chrono-button>
-    </form>
-    <form id='remove'>
-      <chrono-button>Remove</chrono-button>
     </form>
   </div>
 `);
@@ -121,9 +115,7 @@ class ChronoTimer extends HTMLElement {
     this._lastElapsed = 0;
     this._resolution = 100;
 
-    this.end = this.end.bind(this);
     this.pause = this.pause.bind(this);
-    this.removeTimer = this.removeTimer.bind(this);
     this.increment = this.increment.bind(this);
   }
 
@@ -169,33 +161,17 @@ class ChronoTimer extends HTMLElement {
   }
 
   connectedCallback() {
-    const formEnd = this.shadowRoot.querySelector('form#end');
-    formEnd.addEventListener('submit', this.end);
-    formEnd.addEventListener('chrono:buttonclick', this.end);
-
     const formPause = this.shadowRoot.querySelector('form#pause');
     formPause.addEventListener('submit', this.pause);
     formPause.addEventListener('chrono:buttonclick', this.pause);
-
-    const formRemove = this.shadowRoot.querySelector('form#remove');
-    formRemove.addEventListener('submit', this.removeTimer);
-    formRemove.addEventListener('chrono:buttonclick', this.removeTimer);
 
     this.animation = window.requestAnimationFrame(this.increment);
   }
 
   disconnectedCallback() {
-    const formEnd = this.shadowRoot.querySelector('form#end');
-    formEnd.removeEventListener('submit', this.end);
-    formEnd.removeEventListener('chrono:buttonclick', this.end);
-
     const formPause = this.shadowRoot.querySelector('form#pause');
     formPause.removeEventListener('submit', this.pause);
     formPause.removeEventListener('chrono:buttonclick', this.pause);
-
-    const formRemove = this.shadowRoot.querySelector('form#remove');
-    formRemove.removeEventListener('submit', this.removeTimer);
-    formRemove.removeEventListener('chrono:buttonclick', this.removeTimer);
 
     window.cancelAnimationFrame(this.animation);
   }
@@ -220,19 +196,6 @@ class ChronoTimer extends HTMLElement {
     this.setAttribute('stateid', timer.id);
   }
 
-  end(event) {
-    event.preventDefault();
-
-    this.dispatchEvent(new CustomEvent('state:timerend', {
-      detail: {
-        id: this.state.id,
-        time: Date.now(),
-      },
-      bubbles: true,
-      composed: true,
-    }));
-  }
-
   pause(event) {
     event.preventDefault();
 
@@ -247,18 +210,6 @@ class ChronoTimer extends HTMLElement {
     if (!this.state.paused) {
       this.animation = window.requestAnimationFrame(this.increment);
     }
-  }
-
-  removeTimer(event) {
-    event.preventDefault();
-
-    this.dispatchEvent(new CustomEvent('state:timerremove', {
-      detail: {
-        id: this.state.id,
-      },
-      bubbles: true,
-      composed: true,
-    }));
   }
 
   increment() {
@@ -296,12 +247,6 @@ module.exports = (timer = {
     <form id='pause'>
       <chrono-button>Pause</chrono-button>
     </form>
-    <form id='end'>
-      <chrono-button>End</chrono-button>
-    </form>
-    <form id='remove'>
-      <chrono-button>Remove</chrono-button>
-    </form>
   </div>
 `);
 
@@ -310,13 +255,13 @@ module.exports = (timer = {
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const templateTimer = __webpack_require__(2);
+const templateTimerBrief = __webpack_require__(34);
 const templateTimerFull = __webpack_require__(0);
 
 module.exports = (timers = [], isFull = false) => (`
   <div id='timers'>
-    ${timers.map(timer => (
-      isFull ? templateTimerFull(timer) : templateTimer(timer)
+    ${[...timers].reverse().map(timer => (
+      isFull ? templateTimerFull(timer) : templateTimerBrief(timer)
     )).join('')}
   </div>
 `);
@@ -419,7 +364,7 @@ class ChronoNav extends HTMLElement {
   get state() {
     const jsonString = this.getAttribute('state');
 
-    return jsonString ? JSON.parse(jsonString) : [];
+    return jsonString ? JSON.parse(jsonString) : {};
   }
 
   set state(state) {
@@ -429,24 +374,28 @@ class ChronoNav extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
       case 'state': {
-        const oldState = oldValue ? JSON.parse(oldValue) : [];
-        const oldCurrentIndex = oldState.findIndex(item => item.current);
+        const oldState = oldValue ? JSON.parse(oldValue) : {};
 
-        const newState = newValue ? JSON.parse(newValue) : [];
-        const newCurrentIndex = newState.findIndex(item => item.current);
+        let oldCurrentIndex = false;
+        if (oldState.routes) {
+          oldCurrentIndex = oldState.routes.findIndex(item => item.current);
+        }
+
+        const newState = newValue ? JSON.parse(newValue) : {};
+        const newCurrentIndex = newState.routes.findIndex(item => item.current);
 
         const nav = this.shadowRoot.querySelector('nav');
-        const navElements = this.shadowRoot.querySelectorAll('a') || [];
+        const navElements = nav.querySelectorAll('a') || [];
         const border = this.shadowRoot.querySelector('.border');
 
-        if (!oldState || newState.length !== oldState.length) {
-          this._borderWidth = nav.offsetWidth / newState.length;
+        if (!oldValue || newState.routes.length !== oldState.routes.length) {
+          this._borderWidth = nav.offsetWidth / newState.routes.length;
           border.style.width = `${this._borderWidth}px`;
         }
 
         const currentChanged = newCurrentIndex !== oldCurrentIndex;
 
-        newState.forEach((item, index) => {
+        newState.routes.forEach((item, index) => {
           const existingItem = navElements[index];
           if (existingItem) {
             if (currentChanged) {
@@ -471,10 +420,32 @@ class ChronoNav extends HTMLElement {
                 existingItem.classList.remove('current');
               }
             }
+
+            if (item.id === 'timers') {
+              existingItem.querySelector('span').textContent =
+                newState.timerCount ? newState.timerCount : '';
+
+              if (newState.timerCount) {
+                existingItem.classList.add('has-count');
+              } else {
+                existingItem.classList.remove('has-count');
+              }
+            }
           } else {
             const chronoNavItem = document.createElement('a');
             chronoNavItem.setAttribute('href', item.path);
-            chronoNavItem.textContent = item.title;
+
+            chronoNavItem.appendChild(document.createTextNode(item.title));
+
+            if (item.id === 'timers') {
+              const countElement = document.createElement('span');
+              countElement.textContent = newState.timerCount ? newState.timerCount : '';
+              if (newState.timerCount) {
+                chronoNavItem.classList.add('has-count');
+              }
+              chronoNavItem.appendChild(countElement);
+            }
+
             if (item.current) {
               chronoNavItem.classList = 'current';
               border.style.transform = `translate(${newCurrentIndex * this._borderWidth}px)`;
@@ -509,7 +480,7 @@ class ChronoNav extends HTMLElement {
 
     this.dispatchEvent(new CustomEvent('route:change', {
       detail: {
-        data: this.state[index],
+        data: this.state.routes[index],
       },
       bubbles: true,
       composed: true,
@@ -890,12 +861,15 @@ class ChronoState extends HTMLElement {
         const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
 
         const nav = main.querySelector('chrono-nav');
-        nav.setAttribute('state', JSON.stringify(this._state.toObject().routes));
+        nav.setAttribute('state', JSON.stringify({
+          routes: this._state.routes,
+          timerCount: this._state.timers.length,
+        }));
 
         const router = main.querySelector('chrono-router');
         router.setAttribute('state', JSON.stringify(this._state.toObject()));
 
-        console.log('state', this._state);
+        // console.log('state', this._state);
         break;
       }
       default:
@@ -1068,7 +1042,7 @@ class ChronoTimerFull extends ChronoTimer {
         const chronoTimerSplit = document.createElement('chrono-timersplit');
         chronoTimerSplit.setAttribute('state', JSON.stringify(split));
         chronoTimerSplit.setAttribute('id', `split-${splitIndex}`);
-        splitsContainer.appendChild(chronoTimerSplit);
+        splitsContainer.insertBefore(chronoTimerSplit, splitsContainer.firstChild);
       }
     });
   }
@@ -1172,18 +1146,19 @@ class ChronoTimers extends HTMLElement {
   }
 
   addTimer(timer) {
-    const chronoTimer = document.createElement('chrono-timer');
+    const chronoTimer = document.createElement('chrono-timerbrief');
     chronoTimer.setAttribute('state', JSON.stringify(timer));
-    this.shadowRoot.querySelector('#timers').appendChild(chronoTimer);
+    const timersElement = this.shadowRoot.querySelector('#timers');
+    timersElement.insertBefore(chronoTimer, timersElement.firstChild);
   }
 
   editTimer(timer) {
-    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`chrono-timerbrief[stateid='${timer.id}']`);
     component.setAttribute('state', JSON.stringify(timer));
   }
 
   removeTimer(timer) {
-    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`chrono-timerbrief[stateid='${timer.id}']`);
     component.remove();
   }
 }
@@ -1364,6 +1339,27 @@ a {
   border-bottom: 5px solid transparent;
   text-decoration: none;
   color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+a span {
+  pointer-events: none;
+}
+
+a.has-count span {
+  width: 1.2rem;
+  height: 0.9rem;
+  border-radius: 1rem;
+  color: white;
+  background-color: #E91E63;
+  margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
 }
 
 a.current {
@@ -1381,12 +1377,18 @@ a.hide {
 /* 17 */
 /***/ (function(module, exports) {
 
-const templateNav = (items = []) => (`
+const templateNav = (state = {
+  routes: [],
+  timerCount: 0,
+}) => (`
   <nav>
-    ${items.map(item => (`
-      <a href='${item.path}'>${item.title}</a>
+    ${state.routes.map(item => (`
+      ${item.id === 'timers' ? `
+        <a id='${item.id}' class='${state.timerCount ? 'has-count' : ''}' href='${item.path}'>${item.title}<span>${state.timerCount ? state.timerCount : ''}</span></a>
+      ` : `
+        <a id='${item.id}' href='${item.path}'>${item.title}</a>
+      `}
     `)).join('')}
-
   </nav>
   <div class='border'></div>
 `);
@@ -1725,9 +1727,132 @@ __webpack_require__(4);
 __webpack_require__(5);
 __webpack_require__(10);
 __webpack_require__(1);
+__webpack_require__(32);
 __webpack_require__(11);
 __webpack_require__(13);
 __webpack_require__(12);
+
+
+/***/ }),
+/* 32 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const ChronoTimer = __webpack_require__(1);
+
+const style = __webpack_require__(33);
+const template = __webpack_require__(34);
+
+class ChronoTimerBrief extends ChronoTimer {
+  constructor() {
+    super();
+
+    this.removeTimer = this.removeTimer.bind(this);
+  }
+
+  initShadowRoot() {
+    this.shadowRoot.innerHTML = `
+      <style>
+        ${style()}
+      </style>
+
+      <template>
+        ${template()}
+      </template>
+    `;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    const formRemove = this.shadowRoot.querySelector('form#remove');
+    formRemove.addEventListener('submit', this.removeTimer);
+    formRemove.addEventListener('chrono:buttonclick', this.removeTimer);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    const formRemove = this.shadowRoot.querySelector('form#remove');
+    formRemove.removeEventListener('submit', this.removeTimer);
+    formRemove.removeEventListener('chrono:buttonclick', this.removeTimer);
+  }
+
+  removeTimer(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('state:timerremove', {
+      detail: {
+        id: this.state.id,
+      },
+      bubbles: true,
+      composed: true,
+    }));
+  }
+}
+
+window.customElements.define('chrono-timerbrief', ChronoTimerBrief);
+
+module.exports = ChronoTimerBrief;
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, exports) {
+
+module.exports = () => (`
+
+:host {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem 0;
+}
+
+h1 {
+  font-weight: normal;
+}
+
+chrono-timersplit {
+  text-align: center;
+}
+
+.time {
+  flex-grow: 1;
+}
+
+#actions {
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+`);
+
+/***/ }),
+/* 34 */
+/***/ (function(module, exports) {
+
+module.exports = (timer = {
+  id: false,
+  start: false,
+  end: false,
+  paused: false,
+  splits: [],
+}) => (`
+  <div id='elapsed' class='time'>${timer.end ? (timer.end - timer.start) : (Date.now() - timer.start)}</div>
+  <div id='actions'>
+    <form id='pause'>
+      <chrono-button>Pause</chrono-button>
+    </form>
+    <form id='remove'>
+      <chrono-button>Remove</chrono-button>
+    </form>
+  </div>
+`);
 
 
 /***/ })

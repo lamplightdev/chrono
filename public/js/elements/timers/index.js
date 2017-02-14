@@ -76,18 +76,19 @@ class ChronoTimers extends HTMLElement {
   }
 
   addTimer(timer) {
-    const chronoTimer = document.createElement('chrono-timer');
+    const chronoTimer = document.createElement('chrono-timerbrief');
     chronoTimer.setAttribute('state', JSON.stringify(timer));
-    this.shadowRoot.querySelector('#timers').appendChild(chronoTimer);
+    const timersElement = this.shadowRoot.querySelector('#timers');
+    timersElement.insertBefore(chronoTimer, timersElement.firstChild);
   }
 
   editTimer(timer) {
-    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`chrono-timerbrief[stateid='${timer.id}']`);
     component.setAttribute('state', JSON.stringify(timer));
   }
 
   removeTimer(timer) {
-    const component = this.shadowRoot.querySelector(`chrono-timer[stateid='${timer.id}']`);
+    const component = this.shadowRoot.querySelector(`chrono-timerbrief[stateid='${timer.id}']`);
     component.remove();
   }
 }

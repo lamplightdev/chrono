@@ -17,9 +17,7 @@ class ChronoTimer extends HTMLElement {
     this._lastElapsed = 0;
     this._resolution = 100;
 
-    this.end = this.end.bind(this);
     this.pause = this.pause.bind(this);
-    this.removeTimer = this.removeTimer.bind(this);
     this.increment = this.increment.bind(this);
   }
 
@@ -65,33 +63,17 @@ class ChronoTimer extends HTMLElement {
   }
 
   connectedCallback() {
-    const formEnd = this.shadowRoot.querySelector('form#end');
-    formEnd.addEventListener('submit', this.end);
-    formEnd.addEventListener('chrono:buttonclick', this.end);
-
     const formPause = this.shadowRoot.querySelector('form#pause');
     formPause.addEventListener('submit', this.pause);
     formPause.addEventListener('chrono:buttonclick', this.pause);
-
-    const formRemove = this.shadowRoot.querySelector('form#remove');
-    formRemove.addEventListener('submit', this.removeTimer);
-    formRemove.addEventListener('chrono:buttonclick', this.removeTimer);
 
     this.animation = window.requestAnimationFrame(this.increment);
   }
 
   disconnectedCallback() {
-    const formEnd = this.shadowRoot.querySelector('form#end');
-    formEnd.removeEventListener('submit', this.end);
-    formEnd.removeEventListener('chrono:buttonclick', this.end);
-
     const formPause = this.shadowRoot.querySelector('form#pause');
     formPause.removeEventListener('submit', this.pause);
     formPause.removeEventListener('chrono:buttonclick', this.pause);
-
-    const formRemove = this.shadowRoot.querySelector('form#remove');
-    formRemove.removeEventListener('submit', this.removeTimer);
-    formRemove.removeEventListener('chrono:buttonclick', this.removeTimer);
 
     window.cancelAnimationFrame(this.animation);
   }
@@ -116,19 +98,6 @@ class ChronoTimer extends HTMLElement {
     this.setAttribute('stateid', timer.id);
   }
 
-  end(event) {
-    event.preventDefault();
-
-    this.dispatchEvent(new CustomEvent('state:timerend', {
-      detail: {
-        id: this.state.id,
-        time: Date.now(),
-      },
-      bubbles: true,
-      composed: true,
-    }));
-  }
-
   pause(event) {
     event.preventDefault();
 
@@ -143,18 +112,6 @@ class ChronoTimer extends HTMLElement {
     if (!this.state.paused) {
       this.animation = window.requestAnimationFrame(this.increment);
     }
-  }
-
-  removeTimer(event) {
-    event.preventDefault();
-
-    this.dispatchEvent(new CustomEvent('state:timerremove', {
-      detail: {
-        id: this.state.id,
-      },
-      bubbles: true,
-      composed: true,
-    }));
   }
 
   increment() {

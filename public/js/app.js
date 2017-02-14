@@ -6,6 +6,7 @@ require('./elements/button');
 require('./elements/nav');
 require('./elements/timeradd');
 require('./elements/timer');
+require('./elements/timerbrief');
 require('./elements/timerfull');
 require('./elements/timersplit');
 require('./elements/timers');

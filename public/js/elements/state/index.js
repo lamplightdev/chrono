@@ -98,12 +98,15 @@ class ChronoState extends HTMLElement {
         const main = this.shadowRoot.querySelector('slot').assignedNodes()[0];
 
         const nav = main.querySelector('chrono-nav');
-        nav.setAttribute('state', JSON.stringify(this._state.toObject().routes));
+        nav.setAttribute('state', JSON.stringify({
+          routes: this._state.routes,
+          timerCount: this._state.timers.length,
+        }));
 
         const router = main.querySelector('chrono-router');
         router.setAttribute('state', JSON.stringify(this._state.toObject()));
 
-        console.log('state', this._state);
+        // console.log('state', this._state);
         break;
       }
       default:

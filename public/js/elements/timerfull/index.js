@@ -95,7 +95,7 @@ class ChronoTimerFull extends ChronoTimer {
         const chronoTimerSplit = document.createElement('chrono-timersplit');
         chronoTimerSplit.setAttribute('state', JSON.stringify(split));
         chronoTimerSplit.setAttribute('id', `split-${splitIndex}`);
-        splitsContainer.appendChild(chronoTimerSplit);
+        splitsContainer.insertBefore(chronoTimerSplit, splitsContainer.firstChild);
       }
     });
   }

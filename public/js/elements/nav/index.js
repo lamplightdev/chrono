@@ -33,7 +33,7 @@ class ChronoNav extends HTMLElement {
   get state() {
     const jsonString = this.getAttribute('state');
 
-    return jsonString ? JSON.parse(jsonString) : [];
+    return jsonString ? JSON.parse(jsonString) : {};
   }
 
   set state(state) {
@@ -43,24 +43,28 @@ class ChronoNav extends HTMLElement {
   attributeChangedCallback(name, oldValue, newValue) {
     switch (name) {
       case 'state': {
-        const oldState = oldValue ? JSON.parse(oldValue) : [];
-        const oldCurrentIndex = oldState.findIndex(item => item.current);
+        const oldState = oldValue ? JSON.parse(oldValue) : {};
 
-        const newState = newValue ? JSON.parse(newValue) : [];
-        const newCurrentIndex = newState.findIndex(item => item.current);
+        let oldCurrentIndex = false;
+        if (oldState.routes) {
+          oldCurrentIndex = oldState.routes.findIndex(item => item.current);
+        }
+
+        const newState = newValue ? JSON.parse(newValue) : {};
+        const newCurrentIndex = newState.routes.findIndex(item => item.current);
 
         const nav = this.shadowRoot.querySelector('nav');
-        const navElements = this.shadowRoot.querySelectorAll('a') || [];
+        const navElements = nav.querySelectorAll('a') || [];
         const border = this.shadowRoot.querySelector('.border');
 
-        if (!oldState || newState.length !== oldState.length) {
-          this._borderWidth = nav.offsetWidth / newState.length;
+        if (!oldValue || newState.routes.length !== oldState.routes.length) {
+          this._borderWidth = nav.offsetWidth / newState.routes.length;
           border.style.width = `${this._borderWidth}px`;
         }
 
         const currentChanged = newCurrentIndex !== oldCurrentIndex;
 
-        newState.forEach((item, index) => {
+        newState.routes.forEach((item, index) => {
           const existingItem = navElements[index];
           if (existingItem) {
             if (currentChanged) {
@@ -85,10 +89,32 @@ class ChronoNav extends HTMLElement {
                 existingItem.classList.remove('current');
               }
             }
+
+            if (item.id === 'timers') {
+              existingItem.querySelector('span').textContent =
+                newState.timerCount ? newState.timerCount : '';
+
+              if (newState.timerCount) {
+                existingItem.classList.add('has-count');
+              } else {
+                existingItem.classList.remove('has-count');
+              }
+            }
           } else {
             const chronoNavItem = document.createElement('a');
             chronoNavItem.setAttribute('href', item.path);
-            chronoNavItem.textContent = item.title;
+
+            chronoNavItem.appendChild(document.createTextNode(item.title));
+
+            if (item.id === 'timers') {
+              const countElement = document.createElement('span');
+              countElement.textContent = newState.timerCount ? newState.timerCount : '';
+              if (newState.timerCount) {
+                chronoNavItem.classList.add('has-count');
+              }
+              chronoNavItem.appendChild(countElement);
+            }
+
             if (item.current) {
               chronoNavItem.classList = 'current';
               border.style.transform = `translate(${newCurrentIndex * this._borderWidth}px)`;
@@ -123,7 +149,7 @@ class ChronoNav extends HTMLElement {
 
     this.dispatchEvent(new CustomEvent('route:change', {
       detail: {
-        data: this.state[index],
+        data: this.state.routes[index],
       },
       bubbles: true,
       composed: true,
