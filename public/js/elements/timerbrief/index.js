@@ -8,6 +8,7 @@ class ChronoTimerBrief extends ChronoTimer {
     super();
 
     this.removeTimer = this.removeTimer.bind(this);
+    this.onView = this.onView.bind(this);
   }
 
   initShadowRoot() {
@@ -28,6 +29,9 @@ class ChronoTimerBrief extends ChronoTimer {
     const formRemove = this.shadowRoot.querySelector('form#remove');
     formRemove.addEventListener('submit', this.removeTimer);
     formRemove.addEventListener('chrono:buttonclick', this.removeTimer);
+
+    const buttonView = this.shadowRoot.querySelector('#view');
+    buttonView.addEventListener('click', this.onView);
   }
 
   disconnectedCallback() {
@@ -36,6 +40,9 @@ class ChronoTimerBrief extends ChronoTimer {
     const formRemove = this.shadowRoot.querySelector('form#remove');
     formRemove.removeEventListener('submit', this.removeTimer);
     formRemove.removeEventListener('chrono:buttonclick', this.removeTimer);
+
+    const buttonView = this.shadowRoot.querySelector('#view');
+    buttonView.removeEventListener('click', this.onView);
   }
 
   removeTimer(event) {
@@ -44,6 +51,21 @@ class ChronoTimerBrief extends ChronoTimer {
     this.dispatchEvent(new CustomEvent('state:timerremove', {
       detail: {
         id: this.state.id,
+      },
+      bubbles: true,
+      composed: true,
+    }));
+  }
+
+  onView(event) {
+    event.preventDefault();
+
+    this.dispatchEvent(new CustomEvent('route:change', {
+      detail: {
+        id: 'home',
+        params: {
+          id: this.state.id,
+        },
       },
       bubbles: true,
       composed: true,

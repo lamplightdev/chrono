@@ -50,17 +50,25 @@ class ChronoPageHome extends HTMLElement {
       case 'state': {
         const oldState = oldValue ? JSON.parse(oldValue) : {};
         const newState = newValue ? JSON.parse(newValue) : {};
+
+        let currentTimer = newState.timers[newState.timers.length - 1];
+        const currentRoute = newState.routes.find(route => route.current);
+
+        if (typeof currentRoute.params.id !== 'undefined') {
+          currentTimer = newState.timers.find(timer => timer.id === currentRoute.params.id);
+        }
+
         if (!oldValue) {
           if (newState.timers.length) {
-            this.initComponent(newState.timers[newState.timers.length - 1]);
+            this.initComponent(currentTimer);
           } else {
             this.initComponent();
           }
         } else {
           if (newState.timers.length && oldState.timers.length) {
-            this.updateTimer(newState.timers[newState.timers.length - 1]);
+            this.updateTimer(currentTimer);
           } else if (newState.timers.length && !oldState.timers.length) {
-            this.initComponent(newState.timers[newState.timers.length - 1]);
+            this.initComponent(currentTimer);
           } else if (!newState.timers.length && oldState.timers.length) {
             this.initComponent();
           }

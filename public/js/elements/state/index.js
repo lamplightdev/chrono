@@ -15,9 +15,7 @@ class ChronoState extends HTMLElement {
 
   connectedCallback() {
     this.addEventListener('route:change', (event) => {
-      this.onStateChange('route:change', Object.assign({}, event.detail.data, {
-        replace: event.detail.replace,
-      }));
+      this.onStateChange('route:change', event.detail);
     });
 
     this.addEventListener('state:timeradd', (event) => {

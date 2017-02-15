@@ -30,10 +30,11 @@ class State {
     }
   }
 
-  changeRoute(newRoute) {
+  changeRoute(routeData) {
     this.routes = this.routes.map(route => (
       Object.assign({}, route, {
-        current: route.id === newRoute.id,
+        current: route.id === routeData.id,
+        params: routeData.params || {},
       })
     ));
   }

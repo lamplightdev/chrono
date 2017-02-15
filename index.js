@@ -21,18 +21,21 @@ const state = new StateServer({
   routes: [{
     id: 'home',
     title: 'Home',
-    path: '/',
+    path: '/home',
     current: true,
+    params: {},
   }, {
     id: 'timers',
     title: 'Timers',
     path: '/timers',
+    params: {},
   }],
 });
 
-app.get('/', (req, res) => {
+app.get(['/', '/home', '/home/:id'], (req, res) => {
   state.changeRoute({
     id: 'home',
+    params: req.params,
   });
 
   const content = templateHome({

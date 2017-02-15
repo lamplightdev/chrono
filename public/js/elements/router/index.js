@@ -19,7 +19,7 @@ class ChronoRouter extends HTMLElement {
       this.dispatchEvent(new CustomEvent('route:change', {
         detail: {
           replace: true,
-          data: event.state,
+          data: event.state.id,
         },
         bubbles: true,
         composed: true,

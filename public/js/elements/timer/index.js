@@ -15,23 +15,13 @@ class ChronoTimer extends HTMLElement {
 
     this.animation = null;
     this._lastElapsed = 0;
-    this._resolution = 100;
+    this._resolution = 10;
 
     this.pause = this.pause.bind(this);
     this.increment = this.increment.bind(this);
   }
 
-  initShadowRoot() {
-    this.shadowRoot.innerHTML = `
-      <style>
-        ${style()}
-      </style>
-
-      <template>
-        ${template()}
-      </template>
-    `;
-  }
+  initShadowRoot() {}
 
   static get observedAttributes() {
     return ['state'];
@@ -79,6 +69,26 @@ class ChronoTimer extends HTMLElement {
   }
 
   update(timer) {
+    this.updateElapsed(timer);
+
+    const pauseButton = this.shadowRoot.querySelector('#pause chrono-button');
+    if (!this.state.paused) {
+      pauseButton.querySelector('#stop').classList.remove('hide');
+      pauseButton.querySelector('#start').classList.add('hide');
+
+      window.cancelAnimationFrame(this.animation);
+      this.animation = window.requestAnimationFrame(this.increment);
+    } else {
+      pauseButton.querySelector('#stop').classList.add('hide');
+      pauseButton.querySelector('#start').classList.remove('hide');
+
+      window.cancelAnimationFrame(this.animation);
+    }
+
+    this.setAttribute('stateid', timer.id);
+  }
+
+  updateElapsed(timer) {
     let elapsed = 0;
 
     if (timer.end) {
@@ -103,22 +113,6 @@ class ChronoTimer extends HTMLElement {
 
     elapsed = `${elapsed.substring(0, 2)}:${elapsed.substring(2)}`;
     this.shadowRoot.querySelector('#elapsed').textContent = elapsed;
-
-    const pauseButton = this.shadowRoot.querySelector('#pause chrono-button');
-    if (!this.state.paused) {
-      pauseButton.querySelector('#stop').classList.remove('hide');
-      pauseButton.querySelector('#start').classList.add('hide');
-
-      window.cancelAnimationFrame(this.animation);
-      this.animation = window.requestAnimationFrame(this.increment);
-    } else {
-      pauseButton.querySelector('#stop').classList.add('hide');
-      pauseButton.querySelector('#start').classList.remove('hide');
-
-      window.cancelAnimationFrame(this.animation);
-    }
-
-    this.setAttribute('stateid', timer.id);
   }
 
   pause(event) {
@@ -138,7 +132,7 @@ class ChronoTimer extends HTMLElement {
     const diff = Math.floor((Date.now() - this.state.start) / (1000 / this._resolution));
 
     if (diff > this._lastElapsed) {
-      this.update(this.state);
+      this.updateElapsed(this.state);
     }
 
     this._lastElapsed = diff;

@@ -1,16 +1,30 @@
 const State = require('./state');
 
 class StateClient extends State {
-  changeRoute(route) {
-    super.changeRoute(route);
+  changeRoute(routeData) {
+    super.changeRoute(routeData);
 
-    if (route.replace) {
-      history.replaceState(route, route.title, route.path);
-    } else {
-      history.pushState(route, route.title, route.path);
+    const currentRoute = this.routes.find(route => route.id === routeData.id);
+
+    let path = currentRoute.path;
+
+    switch (currentRoute.id) {
+      case 'home':
+        if (typeof currentRoute.params.id !== 'undefined') {
+          path = `${path}/${currentRoute.params.id}`;
+        }
+        break;
+      default:
+        break;
     }
 
-    document.title = `Chrono - ${route.title}`;
+    if (routeData.replace) {
+      history.replaceState(currentRoute, currentRoute.title, path);
+    } else {
+      history.pushState(currentRoute, currentRoute.title, path);
+    }
+
+    document.title = `Chrono - ${currentRoute.title}`;
   }
 }
 

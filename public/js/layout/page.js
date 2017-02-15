@@ -10,6 +10,8 @@ const layoutPage = (args) => {
 
 <html lang="en">
 
+  <base href='/' />
+
   <head>
     <meta charset="utf-8">
     <meta name="viewport"

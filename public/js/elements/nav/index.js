@@ -149,7 +149,7 @@ class ChronoNav extends HTMLElement {
 
     this.dispatchEvent(new CustomEvent('route:change', {
       detail: {
-        data: this.state.routes[index],
+        id: this.state.routes[index].id,
       },
       bubbles: true,
       composed: true,
