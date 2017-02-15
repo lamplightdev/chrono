@@ -18,8 +18,16 @@ chrono-timersplit {
   text-align: center;
 }
 
+chrono-button span.hide {
+  display: none;
+}
+
 #elapsed {
   z-index: 2;
+}
+
+#split.hide {
+  display: none;
 }
 
 .dyn {

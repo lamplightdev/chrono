@@ -11,9 +11,9 @@ module.exports = (timer = {
       ${[...timer.splits].reverse().map((split, splitIndex) => `<chrono-timersplit id='split-${splitIndex}' state='${JSON.stringify(split)}'></chrono-timersplit>`)}
     </div>
     <form id='pause'>
-      <chrono-button>Pause</chrono-button>
+      <chrono-button><span id='stop'>Stop</span><span id='start'>Start</span></chrono-button>
     </form>
-    <form id='split'>
+    <form id='split' ${timer.paused ? 'hide' : ''}>
       <chrono-button>Split</chrono-button>
     </form>
   </div>

@@ -48,7 +48,7 @@ class ChronoTimers extends HTMLElement {
           const newState = this._stateString ? JSON.parse(this._stateString) : [];
 
           newState.forEach((newTimer) => {
-            if (!this._state.some(existingTimer => existingTimer.start === newTimer.start)) {
+            if (!this._state.some(existingTimer => existingTimer.id === newTimer.id)) {
               this.addTimer(newTimer);
             } else {
               this.editTimer(newTimer);
@@ -56,7 +56,7 @@ class ChronoTimers extends HTMLElement {
           });
 
           this._state.forEach((existingTimer) => {
-            if (!newState.some(newTimer => newTimer.start === existingTimer.start)) {
+            if (!newState.some(newTimer => newTimer.id === existingTimer.id)) {
               this.removeTimer(existingTimer);
             }
           });

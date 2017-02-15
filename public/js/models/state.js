@@ -66,7 +66,12 @@ class State {
 
   pauseTimer(data) {
     const foundTimer = this.timers.find(timer => timer.id === data.id);
-    foundTimer.paused = !foundTimer.paused;
+    if (foundTimer.paused) {
+      foundTimer.start = data.time - foundTimer.paused;
+      foundTimer.paused = false;
+    } else {
+      foundTimer.paused = data.time - foundTimer.start;
+    }
   }
 
   splitTimer(data) {

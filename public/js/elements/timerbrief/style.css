@@ -16,6 +16,10 @@ chrono-timersplit {
   text-align: center;
 }
 
+chrono-button span.hide {
+  display: none;
+}
+
 .time {
   flex-grow: 1;
 }

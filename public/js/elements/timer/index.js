@@ -79,7 +79,16 @@ class ChronoTimer extends HTMLElement {
   }
 
   update(timer) {
-    let elapsed = timer.end ? (timer.end - timer.start) : (Date.now() - timer.start);
+    let elapsed = 0;
+
+    if (timer.end) {
+      elapsed = timer.end - timer.start;
+    } else if (timer.paused) {
+      elapsed = timer.paused;
+    } else {
+      elapsed = Date.now() - timer.start;
+    }
+
     elapsed = Math.floor(elapsed / (1000 / this._resolution));
     elapsed = elapsed.toString();
     if (elapsed.length < 2) {
@@ -95,6 +104,20 @@ class ChronoTimer extends HTMLElement {
     elapsed = `${elapsed.substring(0, 2)}:${elapsed.substring(2)}`;
     this.shadowRoot.querySelector('#elapsed').textContent = elapsed;
 
+    const pauseButton = this.shadowRoot.querySelector('#pause chrono-button');
+    if (!this.state.paused) {
+      pauseButton.querySelector('#stop').classList.remove('hide');
+      pauseButton.querySelector('#start').classList.add('hide');
+
+      window.cancelAnimationFrame(this.animation);
+      this.animation = window.requestAnimationFrame(this.increment);
+    } else {
+      pauseButton.querySelector('#stop').classList.add('hide');
+      pauseButton.querySelector('#start').classList.remove('hide');
+
+      window.cancelAnimationFrame(this.animation);
+    }
+
     this.setAttribute('stateid', timer.id);
   }
 
@@ -104,14 +127,11 @@ class ChronoTimer extends HTMLElement {
     this.dispatchEvent(new CustomEvent('state:timerpause', {
       detail: {
         id: this.state.id,
+        time: Date.now(),
       },
       bubbles: true,
       composed: true,
     }));
-
-    if (!this.state.paused) {
-      this.animation = window.requestAnimationFrame(this.increment);
-    }
   }
 
   increment() {

@@ -85,9 +85,15 @@ class ChronoTimerFull extends ChronoTimer {
   update(timer) {
     super.update(timer);
 
-    const splitsContainer = this.shadowRoot.querySelector('#splits');
+    this.updatePauseForm();
+    this.updateSplits();
+  }
 
-    timer.splits.forEach((split, splitIndex) => {
+  updateSplits() {
+    const splitsContainer = this.shadowRoot.querySelector('#splits');
+    const currentSplits = splitsContainer.querySelectorAll('chrono-timersplit');
+
+    this.state.splits.forEach((split, splitIndex) => {
       const splitComponent = splitsContainer.querySelector(`#split-${splitIndex}`);
       if (splitComponent) {
         splitComponent.setAttribute('state', JSON.stringify(split));
@@ -98,6 +104,20 @@ class ChronoTimerFull extends ChronoTimer {
         splitsContainer.insertBefore(chronoTimerSplit, splitsContainer.firstChild);
       }
     });
+
+    for (let i = 0; i < currentSplits.length - this.state.splits.length; i += 1) {
+      currentSplits[currentSplits.length - i - 1].remove();
+    }
+  }
+
+  updatePauseForm() {
+    const pauseForm = this.shadowRoot.querySelector('#split');
+
+    if (this.state.paused) {
+      pauseForm.classList.add('hide');
+    } else {
+      pauseForm.classList.remove('hide');
+    }
   }
 
   split(event) {
