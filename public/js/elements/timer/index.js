@@ -1,6 +1,3 @@
-const style = require('./style.css');
-const template = require('./template');
-
 class ChronoTimer extends HTMLElement {
   constructor() {
     super();
@@ -15,7 +12,6 @@ class ChronoTimer extends HTMLElement {
 
     this.animation = null;
     this._lastElapsed = 0;
-    this._resolution = 10;
 
     this.pause = this.pause.bind(this);
     this.increment = this.increment.bind(this);
@@ -53,11 +49,11 @@ class ChronoTimer extends HTMLElement {
   }
 
   connectedCallback() {
+    this._resolution = this.getAttribute('resolution') || 100;
+
     const formPause = this.shadowRoot.querySelector('form#pause');
     formPause.addEventListener('submit', this.pause);
     formPause.addEventListener('chrono:buttonclick', this.pause);
-
-    this.animation = window.requestAnimationFrame(this.increment);
   }
 
   disconnectedCallback() {
@@ -72,15 +68,19 @@ class ChronoTimer extends HTMLElement {
     this.updateElapsed(timer);
 
     const pauseButton = this.shadowRoot.querySelector('#pause chrono-button');
+    const elapsed = this.shadowRoot.querySelector('#elapsed');
+
     if (!this.state.paused) {
       pauseButton.querySelector('#stop').classList.remove('hide');
       pauseButton.querySelector('#start').classList.add('hide');
+      elapsed.classList.remove('paused');
 
       window.cancelAnimationFrame(this.animation);
-      this.animation = window.requestAnimationFrame(this.increment);
+      this.increment();
     } else {
       pauseButton.querySelector('#stop').classList.add('hide');
       pauseButton.querySelector('#start').classList.remove('hide');
+      elapsed.classList.add('paused');
 
       window.cancelAnimationFrame(this.animation);
     }
@@ -91,28 +91,44 @@ class ChronoTimer extends HTMLElement {
   updateElapsed(timer) {
     let elapsed = 0;
 
-    if (timer.end) {
-      elapsed = timer.end - timer.start;
-    } else if (timer.paused) {
+    if (timer.paused) {
       elapsed = timer.paused;
     } else {
       elapsed = Date.now() - timer.start;
     }
 
-    elapsed = Math.floor(elapsed / (1000 / this._resolution));
-    elapsed = elapsed.toString();
-    if (elapsed.length < 2) {
-      elapsed = `0${elapsed}`;
-    }
-    if (elapsed.length < 3) {
-      elapsed = `0${elapsed}`;
-    }
-    if (elapsed.length < 4) {
-      elapsed = `0${elapsed}`;
+    this.shadowRoot.querySelector('#elapsed').textContent = this.constructor.formatTime(elapsed, this._resolution);
+  }
+
+  static formatTime(elapsed, resolution = 100) {
+    const hours = Math.floor(elapsed / (60 * 60 * 1000));
+    const minutes = Math.floor((elapsed - (hours * 60 * 60 * 1000)) / (60 * 1000));
+    const seconds = Math.floor((elapsed - (hours * 60 * 60 * 1000) - (minutes * 60 * 1000)) / 1000);
+    const ms = elapsed - (hours * 60 * 60 * 1000) - (minutes * 60 * 1000) - (seconds * 1000);
+
+    let remainder = false;
+    if (resolution > 1) {
+      remainder = Math.floor(ms * (resolution / 1000));
     }
 
-    elapsed = `${elapsed.substring(0, 2)}:${elapsed.substring(2)}`;
-    this.shadowRoot.querySelector('#elapsed').textContent = elapsed;
+    const timeParts = [];
+
+    if (remainder !== false) {
+      timeParts.push(`${remainder < 10 ? `0${remainder}` : remainder}`);
+    }
+
+    timeParts.push(`${seconds < 10 ? `0${seconds}` : seconds}`);
+
+    if (minutes || hours || remainder === false) {
+      if (hours) {
+        timeParts.push(`${minutes < 10 ? `0${minutes}` : minutes}`);
+        timeParts.push(`${hours < 10 ? `0${hours}` : hours}`);
+      } else if (minutes > 0 || remainder === false) {
+        timeParts.push(`${minutes < 10 ? `0${minutes}` : minutes}`);
+      }
+    }
+
+    return timeParts.reverse().join(':');
   }
 
   pause(event) {
@@ -136,7 +152,7 @@ class ChronoTimer extends HTMLElement {
     }
 
     this._lastElapsed = diff;
-    if (!this.state.end && !this.state.paused) {
+    if (!this.state.paused) {
       this.animation = window.requestAnimationFrame(this.increment);
     }
   }

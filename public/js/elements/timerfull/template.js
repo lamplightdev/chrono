@@ -6,7 +6,7 @@ module.exports = (timer = {
   splits: [],
 }) => (`
   <div class='container'>
-    <h1 id='elapsed' class='time'>${timer.end ? (timer.end - timer.start) : (Date.now() - timer.start)}</h1>
+    <h1 id='elapsed' class='time ${timer.paused ? 'paused' : ''}'>${timer.end ? (timer.end - timer.start) : (Date.now() - timer.start)}</h1>
     <div id='splits'>
       ${[...timer.splits].reverse().map((split, splitIndex) => `<chrono-timersplit id='split-${splitIndex}' state='${JSON.stringify(split)}'></chrono-timersplit>`)}
     </div>

@@ -33,6 +33,13 @@ const state = new StateServer({
 });
 
 app.get(['/', '/home', '/home/:id'], (req, res) => {
+  if (typeof req.params.id !== 'undefined') {
+    if (!state.timers.find(timer => timer.id === req.params.id)) {
+      res.redirect('/');
+      return;
+    }
+  }
+
   state.changeRoute({
     id: 'home',
     params: req.params,

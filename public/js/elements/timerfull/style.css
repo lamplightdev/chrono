@@ -3,6 +3,11 @@ module.exports = () => (`
 :host {
 }
 
+@keyframes fade {
+  0%,100% { opacity: 1 }
+  50% { opacity: 0 }
+}
+
 .container {
   position: relative;
 }
@@ -24,6 +29,11 @@ chrono-button span.hide {
 
 #elapsed {
   z-index: 2;
+}
+
+#elapsed.paused {
+  opacity: 1;
+  animation: fade 1s infinite;
 }
 
 #split.hide {

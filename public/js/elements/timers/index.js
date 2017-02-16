@@ -77,9 +77,12 @@ class ChronoTimers extends HTMLElement {
 
   addTimer(timer) {
     const chronoTimer = document.createElement('chrono-timerbrief');
-    chronoTimer.setAttribute('state', JSON.stringify(timer));
+    chronoTimer.setAttribute('resolution', 1);
     const timersElement = this.shadowRoot.querySelector('#timers');
     timersElement.insertBefore(chronoTimer, timersElement.firstChild);
+
+    // update after inserted so other attributes (resolution) will have been initialised
+    chronoTimer.setAttribute('state', JSON.stringify(timer));
   }
 
   editTimer(timer) {

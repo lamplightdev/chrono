@@ -43,8 +43,10 @@ class ChronoTimerFull extends ChronoTimer {
     const newState = newValue ? JSON.parse(newValue) : [];
 
     if (oldValue && newState.id > oldState.id && this.getAttribute('minimiseToSelector')) {
+      const fromElement = this.shadowRoot.querySelector('#elapsed');
+      const lastTime = fromElement.textContent;
+
       window.requestAnimationFrame(() => {
-        const fromElement = this.shadowRoot.querySelectorAll('.time')[0];
         const fromElementRect = fromElement.getBoundingClientRect();
 
         const toElement = document.querySelector('chrono-nav').shadowRoot.querySelector('nav a:last-child');
@@ -52,10 +54,7 @@ class ChronoTimerFull extends ChronoTimer {
 
         const element = fromElement.cloneNode();
         element.removeAttribute('id');
-        element.textContent = oldState.end ?
-          (oldState.end - oldState.start) :
-          (Date.now() - oldState.start);
-
+        element.textContent = lastTime;
         element.classList.add('dyn');
 
         element.style.left = `${fromElementRect.left}px`;

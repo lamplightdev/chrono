@@ -1,4 +1,5 @@
 const template = require('./template');
+const ChronoTimer = require('../timer');
 
 class ChronoTimerSplit extends HTMLElement {
   constructor() {
@@ -59,7 +60,7 @@ class ChronoTimerSplit extends HTMLElement {
   update(split) {
     const container = this.shadowRoot.querySelector('.chrono-timersplit');
 
-    container.textContent = split / 1000;
+    container.textContent = ChronoTimer.formatTime(split);
   }
 }
 

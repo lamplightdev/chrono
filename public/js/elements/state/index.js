@@ -104,7 +104,7 @@ class ChronoState extends HTMLElement {
         const router = main.querySelector('chrono-router');
         router.setAttribute('state', JSON.stringify(this._state.toObject()));
 
-        // console.log('state', this._state);
+        console.log('state', this._state);
         break;
       }
       default:

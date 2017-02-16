@@ -24,6 +24,10 @@ chrono-button span.hide {
   flex-grow: 1;
 }
 
+#elapsed.paused {
+  opacity: 0.5;
+}
+
 #actions {
   flex-grow: 1;
 
