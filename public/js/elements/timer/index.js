@@ -118,7 +118,13 @@ class ChronoTimer extends HTMLElement {
     }
 
     timeParts.push(`${seconds < 10 ? `0${seconds}` : seconds}`);
+    timeParts.push(`${minutes < 10 ? `0${minutes}` : minutes}`);
 
+    if (remainder === false || hours > 0) {
+      timeParts.push(`${hours < 10 ? `0${hours}` : hours}`);
+    }
+
+    /*
     if (minutes || hours || remainder === false) {
       if (hours) {
         timeParts.push(`${minutes < 10 ? `0${minutes}` : minutes}`);
@@ -127,6 +133,7 @@ class ChronoTimer extends HTMLElement {
         timeParts.push(`${minutes < 10 ? `0${minutes}` : minutes}`);
       }
     }
+    */
 
     return timeParts.reverse().join(':');
   }

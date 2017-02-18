@@ -12,18 +12,22 @@ module.exports = () => (`
   position: relative;
 }
 
+form {
+  display: inline;
+}
+
 h1 {
   font-weight: normal;
-  font-size: 5rem;
+  font-size: 3rem;
   margin: 0;
-  padding: 2rem;
+  padding: 2rem 0;
 }
 
 chrono-timersplit {
   text-align: center;
 }
 
-chrono-button span.hide {
+chrono-button svg.hide {
   display: none;
 }
 

@@ -1,5 +1,5 @@
-const template = (title = '', isCircle = false) => (`
-  <button class='${isCircle ? 'circle' : ''}'><slot>${title}</slot></button>
+const template = (title = '', isCircle = false, isSmall = false) => (`
+  <button class='${isCircle ? 'circle' : ''} ${isSmall ? 'small' : ''}'><slot>${title}</slot></button>
 `);
 
 module.exports = template;

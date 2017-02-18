@@ -16,7 +16,7 @@ chrono-timersplit {
   text-align: center;
 }
 
-chrono-button span.hide {
+chrono-button svg.hide {
   display: none;
 }
 

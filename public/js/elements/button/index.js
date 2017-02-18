@@ -31,6 +31,9 @@ class ChronoButton extends HTMLElement {
     if (this.hasAttribute('iscircle')) {
       this.shadowRoot.querySelector('button').classList.add('circle');
     }
+    if (this.hasAttribute('issmall')) {
+      this.shadowRoot.querySelector('button').classList.add('small');
+    }
   }
 
   disconnectedCallback() {
